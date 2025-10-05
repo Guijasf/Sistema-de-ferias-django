@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Minhas Solicitações de Férias</h2>
+
+    {% if saldo %}
+        <h3>Seu saldo: <strong>{{ saldo.dias_disponiveis }} dias</strong></h3>
+    {% else %}
+        <h3 style="color: red;">Saldo de férias não encontrado.</h3>
+    {% endif %}
+    <a href="{% url 'ferias:solicitar_ferias' %}">Nova Solicitação</a>
+    {% if is_gestor %}
+        | <a href="{% url 'ferias:dashboard_gestor' %}"><strong>Dashboard do Gestor</strong></a>
+    {% endif %}
+
+    <table>
+        <thead>
+            <tr>
+                <th>Data Início</th>
+                <th>Data Fim</th>
+                <th>Total Dias</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in solicitacoes %}
+            <tr>
+                <td>{{ s.data_inicio|date:"d/m/Y" }}</td>
+                <td>{{ s.data_fim|date:"d/m/Y" }}</td>
+                <td>{{ s.total_dias }}</td>
+                <td>{{ s.get_status_display }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Nenhuma solicitação encontrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

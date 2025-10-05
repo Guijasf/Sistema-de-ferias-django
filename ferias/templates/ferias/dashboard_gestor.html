@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Solicitações Pendentes da Equipe</h2>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Funcionário</th>
+                <th>Data Início</th>
+                <th>Data Fim</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in solicitacoes_pendentes %}
+            <tr>
+                <td>{{ s.solicitante.get_full_name|default:s.solicitante.username }}</td>
+                <td>{{ s.data_inicio|date:"d/m/Y" }}</td>
+                <td>{{ s.data_fim|date:"d/m/Y" }}</td>
+                <td>
+                    <a href="{% url 'ferias:aprovar_solicitacao' s.pk %}">Aprovar</a> |
+                    <form action="{% url 'ferias:rejeitar_solicitacao' s.pk %}" method="post" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="text" name="motivo_rejeicao" placeholder="Motivo (opcional)">
+                        <button type="submit">Rejeitar</button>
+                    </form>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4">Nenhuma solicitação pendente.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

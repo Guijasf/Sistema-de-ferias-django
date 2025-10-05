@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Férias</title>
+    <style>
+        body { font-family: sans-serif; margin: 2em; transition: background-color 0.3s, color 0.3s; }
+        /* Estilos para o modo escuro */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+        body.dark-mode a { color: #bb86fc; }
+        body.dark-mode table { border-color: #444; }
+        body.dark-mode th { background-color: #333; }
+        body.dark-mode td { border-color: #444; }
+
+        nav { margin-bottom: 1em; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+    </style>
+</head>
+<body class="{% if request.session.tema_preferido == 'dark' %}dark-mode{% endif %}">
+    <nav>
+        <a href="{% url 'ferias:dashboard' %}">Meu Dashboard</a> |
+        {% if user.is_authenticated %}
+            <span>Olá, {{ user.username }}!</span> |
+            
+            <span>Tema: 
+                <a href="{% url 'ferias:definir_tema' 'light' %}">Claro</a> | 
+                <a href="{% url 'ferias:definir_tema' 'dark' %}">Escuro</a>
+            </span> |
+            
+            <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" style="background: none; border: none; padding: 0; color: #bb86fc; text-decoration: underline; cursor: pointer; font-size: 1em;">
+                    Sair
+                </button>
+            </form>
+
+        {% else %}
+            <a href="{% url 'login' %}">Entrar</a>
+        {% endif %}
+    </nav>
+    <hr>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
