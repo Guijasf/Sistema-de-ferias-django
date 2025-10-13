@@ -108,3 +108,7 @@ def api_eventos_ferias(request):
         })
 
     return JsonResponse(eventos, safe=False)
+
+@login_required
+def calendario_ferias(request):
+    return render(request, 'ferias/calendario.html')

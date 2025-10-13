@@ -24,6 +24,7 @@
 <body class="{% if request.session.tema_preferido == 'dark' %}dark-mode{% endif %}">
     <nav>
         <a href="{% url 'ferias:dashboard' %}">Meu Dashboard</a> |
+        <a href="{% url 'ferias:calendario' %}">Calendario</a> |
         {% if user.is_authenticated %}
             <span>Olá, {{ user.username }}!</span> |
             

@@ -12,4 +12,5 @@ urlpatterns = [
     path('tema/<str:tema>/', views.definir_tema, name='definir_tema'),
 
     path('api/eventos/', views.api_eventos_ferias, name='api_eventos'),
+    path('calendario/', views.calendario_ferias, name='calendario'),
 ]
