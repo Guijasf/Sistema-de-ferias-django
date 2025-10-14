@@ -14,13 +14,16 @@ from django.http import JsonResponse
 def dashboard(request):
     solicitacoes = SolicitacaoFerias.objects.filter(solicitante=request.user).order_by('-data_solicitacao')
     is_gestor = Funcionario.objects.filter(gestor__user=request.user).exists()
-    periodos = PeriodoAquisitivo.objects.filter(
-        funcionario__user=request.user
-    ).order_by('-data_inicio')
+    
+    periodo_ativo = PeriodoAquisitivo.objects.filter(
+        funcionario__user=request.user,
+        saldo_dias__gt=0
+    ).order_by('data_inicio').first()
+
     context = {
         'solicitacoes': solicitacoes,
         'is_gestor': is_gestor,
-        'periodos_aquisitivos': periodos,
+        'periodo_ativo': periodo_ativo,
     }
     return render(request, 'ferias/dashboard.html', context)
 

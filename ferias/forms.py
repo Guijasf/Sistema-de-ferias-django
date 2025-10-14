@@ -6,43 +6,45 @@ from dateutil.relativedelta import relativedelta
 from .models import SolicitacaoFerias, PeriodoAquisitivo, Funcionario
 from django.core.exceptions import ValidationError
 
-# NOVO: Criamos uma classe de campo customizada
 class PeriodoAquisitivoChoiceField(forms.ModelChoiceField):
-    # Este método é chamado para cada objeto na lista, para decidir qual texto mostrar
     def label_from_instance(self, obj):
-        return f"Período {obj.data_inicio.year}/{obj.data_fim.year} (Saldo: {obj.saldo_dias:.0f} dias)"
+        return f"Período {obj.data_inicio.year}/{obj.data_fim.year} (Saldo: {obj.saldo_dias} dias)"
 
 class SolicitacaoFeriasForm(forms.ModelForm):
-    # ALTERADO: Usamos nosso novo campo customizado
     periodo_aquisitivo = PeriodoAquisitivoChoiceField(
-        queryset=PeriodoAquisitivo.objects.none(), 
+        queryset=PeriodoAquisitivo.objects.none(),
         label="Descontar do Período Aquisitivo",
-        empty_label="--- Selecione o Período ---"
+        empty_label="--- Nenhum período com saldo disponível ---"
     )
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if self.user:
-            queryset = PeriodoAquisitivo.objects.filter(
+            # LÓGICA ALTERADA: Encontrar apenas o período mais antigo com saldo
+            periodos_com_saldo = PeriodoAquisitivo.objects.filter(
                 funcionario__user=self.user, 
                 saldo_dias__gt=0
-            ).order_by('-data_inicio')
-            self.fields['periodo_aquisitivo'].queryset = queryset
-        
-        # Adicionando classes do Bootstrap aos campos diretamente aqui
+            ).order_by('data_inicio')  # Ordena do mais antigo para o mais novo
+
+            primeiro_periodo_valido = periodos_com_saldo.first()
+            
+            if primeiro_periodo_valido:
+                # Se encontrarmos um período válido, o dropdown só terá essa opção
+                self.fields['periodo_aquisitivo'].queryset = PeriodoAquisitivo.objects.filter(pk=primeiro_periodo_valido.pk)
+            else:
+                # Se não houver nenhum período com saldo, o queryset continua vazio
+                self.fields['periodo_aquisitivo'].queryset = PeriodoAquisitivo.objects.none()
+
         self.fields['data_inicio'].widget.attrs.update({'class': 'form-control'})
         self.fields['data_fim'].widget.attrs.update({'class': 'form-control'})
         self.fields['periodo_aquisitivo'].widget.attrs.update({'class': 'form-select'})
 
-
     class Meta:
         model = SolicitacaoFerias
         fields = ['data_inicio', 'data_fim', 'periodo_aquisitivo']
-        # Removemos os widgets daqui, pois estamos configurando no __init__
     
     def clean(self):
-        # ... (O método clean continua exatamente o mesmo de antes, sem alterações)
         cleaned_data = super().clean()
         data_inicio = cleaned_data.get("data_inicio")
         data_fim = cleaned_data.get("data_fim")
@@ -50,6 +52,19 @@ class SolicitacaoFeriasForm(forms.ModelForm):
         
         if not (data_inicio and data_fim and periodo_selecionado):
             return cleaned_data
+
+        # --- NOVA VALIDAÇÃO DE SEGURANÇA ---
+        periodo_mais_antigo_com_saldo = PeriodoAquisitivo.objects.filter(
+            funcionario__user=self.user,
+            saldo_dias__gt=0
+        ).order_by('data_inicio').first()
+
+        if periodo_mais_antigo_com_saldo and periodo_selecionado != periodo_mais_antigo_com_saldo:
+            raise ValidationError(
+                f"Ação inválida. Você deve primeiro utilizar o saldo do seu período aquisitivo mais antigo: "
+                f"{periodo_mais_antigo_com_saldo.data_inicio.year}/{periodo_mais_antigo_com_saldo.data_fim.year}."
+            )
+        # --- FIM DA NOVA VALIDAÇÃO ---
 
         if data_fim < data_inicio:
             raise ValidationError("A data de término não pode ser anterior à data de início.")

@@ -11,21 +11,21 @@
         </div>
     </div>
 
-    <h4>Meus Períodos Aquisitivos</h4>
-    {% for periodo in periodos_aquisitivos %}
+    <h4>Meu Próximo Período Disponível</h4>
+    {% if periodo_ativo %}
         <div class="card mb-2">
             <div class="card-body">
-                Período {{ periodo.data_inicio|date:"Y" }}/{{ periodo.data_fim|date:"Y" }} - <strong>Saldo: {{ periodo.saldo_dias }} dias</strong>
+                Período {{ periodo_ativo.data_inicio|date:"Y" }}/{{ periodo_ativo.data_fim|date:"Y" }} - <strong>Saldo: {{ periodo_ativo.saldo_dias }} dias</strong>
             </div>
         </div>
-    {% empty %}
-        <div class="alert alert-warning">Nenhum período aquisitivo encontrado.</div>
-    {% endfor %}
+    {% else %}
+        <div class="alert alert-info">Você não possui nenhum período de férias com saldo disponível no momento.</div>
+    {% endif %}
 
     <h4 class="mt-4">Minhas Solicitações</h4>
     <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="table-light">
+        <table class="table table-striped table-hover {% if request.session.tema_preferido == 'dark' %}table-dark{% endif %}">
+            <thead class="{% if request.session.tema_preferido != 'dark' %}table-light{% endif %}">
                 <tr>
                     <th>Período Solicitado</th>
                     <th>Total Dias</th>
