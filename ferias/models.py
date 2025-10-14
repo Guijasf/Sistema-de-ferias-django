@@ -24,7 +24,7 @@ class PeriodoAquisitivo(models.Model):
     funcionario = models.ForeignKey(Funcionario, on_delete=models.CASCADE, related_name='periodos_aquisitivos')
     data_inicio = models.DateField()
     data_fim = models.DateField()
-    saldo_dias = models.DecimalField(max_digits=5, decimal_places=2, default=30.0)
+    saldo_dias = models.IntegerField(default=30)
 
     def __str__(self):
         return f"{self.funcionario.user.username} ({self.data_inicio.year}/{self.data_fim.year}) - Saldo: {self.saldo_dias}"

@@ -1,40 +1,60 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Minhas Solicitações de Férias</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Minhas Férias</h2>
+        <div>
+            {% if is_gestor %}
+                <a href="{% url 'ferias:dashboard_gestor' %}" class="btn btn-outline-secondary">Painel do Gestor</a>
+            {% endif %}
+            <a href="{% url 'ferias:solicitar_ferias' %}" class="btn btn-primary">Nova Solicitação</a>
+        </div>
+    </div>
 
-    {% if saldo %}
-        <h3>Seu saldo: <strong>{{ saldo.dias_disponiveis }} dias</strong></h3>
-    {% else %}
-        <h3 style="color: red;">Saldo de férias não encontrado.</h3>
-    {% endif %}
-    <a href="{% url 'ferias:solicitar_ferias' %}">Nova Solicitação</a>
-    {% if is_gestor %}
-        | <a href="{% url 'ferias:dashboard_gestor' %}"><strong>Dashboard do Gestor</strong></a>
-    {% endif %}
+    <h4>Meus Períodos Aquisitivos</h4>
+    {% for periodo in periodos_aquisitivos %}
+        <div class="card mb-2">
+            <div class="card-body">
+                Período {{ periodo.data_inicio|date:"Y" }}/{{ periodo.data_fim|date:"Y" }} - <strong>Saldo: {{ periodo.saldo_dias }} dias</strong>
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-warning">Nenhum período aquisitivo encontrado.</div>
+    {% endfor %}
 
-    <table>
-        <thead>
-            <tr>
-                <th>Data Início</th>
-                <th>Data Fim</th>
-                <th>Total Dias</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for s in solicitacoes %}
-            <tr>
-                <td>{{ s.data_inicio|date:"d/m/Y" }}</td>
-                <td>{{ s.data_fim|date:"d/m/Y" }}</td>
-                <td>{{ s.total_dias }}</td>
-                <td>{{ s.get_status_display }}</td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4">Nenhuma solicitação encontrada.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h4 class="mt-4">Minhas Solicitações</h4>
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Período Solicitado</th>
+                    <th>Total Dias</th>
+                    <th>Status</th>
+                    <th>Período de Desconto</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for s in solicitacoes %}
+                <tr>
+                    <td>{{ s.data_inicio|date:"d/m/Y" }} a {{ s.data_fim|date:"d/m/Y" }}</td>
+                    <td>{{ s.total_dias }}</td>
+                    <td>
+                        {% if s.status == 'aprovado' %}
+                            <span class="badge bg-success">Aprovado</span>
+                        {% elif s.status == 'rejeitado' %}
+                            <span class="badge bg-danger">Rejeitado</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark">Pendente</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ s.periodo_aquisitivo.data_inicio.year }}/{{ s.periodo_aquisitivo.data_fim.year }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center">Nenhuma solicitação encontrada.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 {% endblock %}

@@ -1,52 +1,64 @@
+{% load static %}
 <!DOCTYPE html>
-<html lang="pt-br">
-<head>
+<html lang="pt-br" data-bs-theme="light"> <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Sistema de Férias</title>
-    <style>
-        body { font-family: sans-serif; margin: 2em; transition: background-color 0.3s, color 0.3s; }
-        /* Estilos para o modo escuro */
-        body.dark-mode {
-            background-color: #121212;
-            color: #e0e0e0;
-        }
-        body.dark-mode a { color: #bb86fc; }
-        body.dark-mode table { border-color: #444; }
-        body.dark-mode th { background-color: #333; }
-        body.dark-mode td { border-color: #444; }
-
-        nav { margin-bottom: 1em; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-    </style>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'ferias/css/style.css' %}">
 </head>
-<body class="{% if request.session.tema_preferido == 'dark' %}dark-mode{% endif %}">
-    <nav>
-        <a href="{% url 'ferias:dashboard' %}">Meu Dashboard</a> |
-        <a href="{% url 'ferias:calendario' %}">Calendario</a> |
-        {% if user.is_authenticated %}
-            <span>Olá, {{ user.username }}!</span> |
-            
-            <span>Tema: 
-                <a href="{% url 'ferias:definir_tema' 'light' %}">Claro</a> | 
-                <a href="{% url 'ferias:definir_tema' 'dark' %}">Escuro</a>
-            </span> |
-            
-            <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" style="background: none; border: none; padding: 0; color: #bb86fc; text-decoration: underline; cursor: pointer; font-size: 1em;">
-                    Sair
-                </button>
-            </form>
-
-        {% else %}
-            <a href="{% url 'login' %}">Entrar</a>
-        {% endif %}
+<body class="{% if request.session.tema_preferido == 'dark' %}bg-dark text-white{% else %}bg-light{% endif %}">
+    
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'ferias:dashboard' %}">Sistema de Férias</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ferias:dashboard' %}">Meu Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'ferias:calendario' %}">Calendário</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                                Olá, {{ user.username }}!
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><a class="dropdown-item" href="{% url 'ferias:definir_tema' 'light' %}">Tema Claro</a></li>
+                                <li><a class="dropdown-item" href="{% url 'ferias:definir_tema' 'dark' %}">Tema Escuro</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{% url 'logout' %}" method="post" class="d-inline">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">Sair</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                           <a class="nav-link" href="{% url 'login' %}">Entrar</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
     </nav>
-    <hr>
-    <main>
+
+    <main class="container mt-4">
         {% block content %}{% endblock %}
     </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 </html>
