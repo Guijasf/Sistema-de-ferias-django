@@ -1,10 +1,10 @@
-# ferias/forms.py
-
 from django import forms
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from .models import SolicitacaoFerias, PeriodoAquisitivo, Funcionario
 from django.core.exceptions import ValidationError
+from django.contrib.auth.forms import AuthenticationForm 
+
 
 class PeriodoAquisitivoChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
@@ -21,19 +21,16 @@ class SolicitacaoFeriasForm(forms.ModelForm):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         if self.user:
-            # LÓGICA ALTERADA: Encontrar apenas o período mais antigo com saldo
-            periodos_com_saldo = PeriodoAquisitivo.objects.filter(
+            queryset = PeriodoAquisitivo.objects.filter(
                 funcionario__user=self.user, 
                 saldo_dias__gt=0
-            ).order_by('data_inicio')  # Ordena do mais antigo para o mais novo
+            ).order_by('data_inicio')
 
-            primeiro_periodo_valido = periodos_com_saldo.first()
+            primeiro_periodo_valido = queryset.first()
             
             if primeiro_periodo_valido:
-                # Se encontrarmos um período válido, o dropdown só terá essa opção
                 self.fields['periodo_aquisitivo'].queryset = PeriodoAquisitivo.objects.filter(pk=primeiro_periodo_valido.pk)
             else:
-                # Se não houver nenhum período com saldo, o queryset continua vazio
                 self.fields['periodo_aquisitivo'].queryset = PeriodoAquisitivo.objects.none()
 
         self.fields['data_inicio'].widget.attrs.update({'class': 'form-control'})
@@ -53,7 +50,6 @@ class SolicitacaoFeriasForm(forms.ModelForm):
         if not (data_inicio and data_fim and periodo_selecionado):
             return cleaned_data
 
-        # --- NOVA VALIDAÇÃO DE SEGURANÇA ---
         periodo_mais_antigo_com_saldo = PeriodoAquisitivo.objects.filter(
             funcionario__user=self.user,
             saldo_dias__gt=0
@@ -64,7 +60,6 @@ class SolicitacaoFeriasForm(forms.ModelForm):
                 f"Ação inválida. Você deve primeiro utilizar o saldo do seu período aquisitivo mais antigo: "
                 f"{periodo_mais_antigo_com_saldo.data_inicio.year}/{periodo_mais_antigo_com_saldo.data_fim.year}."
             )
-        # --- FIM DA NOVA VALIDAÇÃO ---
 
         if data_fim < data_inicio:
             raise ValidationError("A data de término não pode ser anterior à data de início.")
@@ -102,3 +97,13 @@ class SolicitacaoFeriasForm(forms.ModelForm):
                 )
 
         return cleaned_data
+
+class CustomLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update(
+            {'class': 'form-control', 'placeholder': 'Nome de usuário'}
+        )
+        self.fields['password'].widget.attrs.update(
+            {'class': 'form-control', 'placeholder': 'Senha'}
+        )
