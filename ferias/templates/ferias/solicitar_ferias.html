@@ -1,59 +1,58 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Solicitar Férias</h3>
+<div class="container-centralizado">
+    <div class="card">
+        <div class="card-header">
+            <h3>Solicitar Férias</h3>
+        </div>
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alerta-erro">
+                        {% for error in form.non_field_errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="campo-form">
+                    {{ form.data_inicio.label_tag }}
+                    {{ form.data_inicio }}
+                    {% for error in form.data_inicio.errors %}
+                        <div class="erro-campo">{{ error }}</div>
+                    {% endfor %}
                 </div>
-                <div class="card-body">
-                    <form method="post">
-                        {% csrf_token %}
 
-                        {% if form.non_field_errors %}
-                            <div class="alert alert-danger">
-                                {% for error in form.non_field_errors %}
-                                    <p class="mb-0">{{ error }}</p>
-                                {% endfor %}
-                            </div>
-                        {% endif %}
-
-                        <div class="mb-3">
-                            <label for="{{ form.data_inicio.id_for_label }}" class="form-label">{{ form.data_inicio.label }}</label>
-                            {{ form.data_inicio }}
-                            {% if form.data_inicio.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.data_inicio.errors %}{{ error }}{% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="{{ form.data_fim.id_for_label }}" class="form-label">{{ form.data_fim.label }}</label>
-                            {{ form.data_fim }}
-                             {% if form.data_fim.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.data_fim.errors %}{{ error }}{% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="{{ form.periodo_aquisitivo.id_for_label }}" class="form-label">{{ form.periodo_aquisitivo.label }}</label>
-                            {{ form.periodo_aquisitivo }}
-                             {% if form.periodo_aquisitivo.errors %}
-                                <div class="invalid-feedback d-block">
-                                    {% for error in form.periodo_aquisitivo.errors %}{{ error }}{% endfor %}
-                                </div>
-                            {% endif %}
-                        </div>
-                        
-                        <button type="submit" class="btn btn-success">Enviar Solicitação</button>
-                        <a href="{% url 'ferias:dashboard' %}" class="btn btn-secondary">Cancelar</a>
-                    </form>
+                <div class="campo-form">
+                    {{ form.data_fim.label_tag }}
+                    {{ form.data_fim }}
+                    {% for error in form.data_fim.errors %}
+                        <div class="erro-campo">{{ error }}</div>
+                    {% endfor %}
                 </div>
-            </div>
+
+                <div class="campo-form">
+                    {{ form.periodo_aquisitivo.label_tag }}
+                    {{ form.periodo_aquisitivo }}
+                     {% for error in form.periodo_aquisitivo.errors %}
+                        <div class="erro-campo">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <button type="submit" class="botao-sucesso">Enviar Solicitação</button>
+                <a href="{% url 'ferias:dashboard' %}" class="botao-secundario">Cancelar</a>
+            </form>
         </div>
     </div>
+</div>
+
+<style>
+    .container-centralizado {
+        max-width: 800px;
+        margin: 20px auto;
+    }
+</style>
 {% endblock %}

@@ -13,3 +13,355 @@ nav { margin-bottom: 1em; }
 table { border-collapse: collapse; width: 100%; }
 th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
 th { background-color: #f2f2f2; }
+
+
+.login-image-side {
+  background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e");
+  
+  background-size: cover;
+  
+  background-position: center;
+}
+
+::before,
+::after {
+  box-sizing: border-box;
+}
+
+
+body.tema-escuro {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.container-principal {
+  max-width: 1100px;
+  margin: 20px auto;
+  padding: 0 15px;
+}
+
+.navegacao-principal {
+  width: 100%;
+  background-color: #212529;
+  padding: 10px 0;
+  border-bottom: 1px solid #333;
+}
+
+.navegacao-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.menu-principal ul,
+.menu-principal li{
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.menu-principal li {
+  display: inline-block;
+  margin-left: 20px;
+}
+
+.menu-principal a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.menu-principal a:hover {
+  color: #fff;
+}
+
+table {
+  width: 100%;
+  border-collapse: colapse;
+  margin-bottom: 20px;
+}
+
+th, td {
+  border: 12px 15px;
+  border-bottom: 1px solid #ddd;
+  text-align: left;
+
+}
+
+thead th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"],
+select,
+textarea {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0 15px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.campo-form {
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: 20px;
+}
+
+label {
+  font-weight: bold;
+  display: block;
+}
+
+
+.botao-principal,
+.botao-sucesso,
+.botao-perigo,
+.botao-secundario {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+
+.botao-principal { background-color: #0d6efd; } 
+.botao-sucesso { background-color: #198754; } 
+.botao-perigo { background-color: #dc3545; }  
+.botao-secundario { background-color: #6c757d; }
+
+.link-botao {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0d6efd;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+.link-botao {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #0d6efd;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 5px;
+}
+
+.link-botao:hover { background-color: #0b5ed7; }
+
+.card-body {
+  padding: 20px;
+}
+
+.bedge {
+  display: inline-block;
+  padding: 5px 10px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  color: #fff;
+  border-radius: 20px;
+}
+.bedge-ativo { background-color: #198754; }
+.bedge-inativo { background-color: #dc3545; } 
+.bedge-pendente { background-color: #ffc107; color: #212529; }
+
+
+body.tema-escuro {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+body.tema-escuro th,
+body.tema-escuro td {
+  border-bottom: 1px solid #444;
+}
+body.tema-escuro thead th {
+  background-color: #1e1e1e;
+}
+
+
+body.tem-escuro .card {
+  background-color: #1e1e1e;
+  border-color: #444;
+  box-shadow: none;
+}
+
+body.tema-escuro .card-header {
+  background-color: #2c2c2c;
+  border-bottom: 1px solid #444;
+}
+
+body.tema-escuro a {
+  color: #6ea8fe;
+
+}
+
+body.tema-escuro .menu-principal a{
+  color: #bbb;
+}
+
+body.tema-escuro .menu-principal a:hover {
+  color: #fff;
+}
+
+.dropdown-link-botao {
+  background: none;
+  border: none;
+  color: #dc3545;
+  padding: 5px 10px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+}
+
+.dropdown-link-botao:hover {
+  background-color: #f4f4f4;
+}
+
+body.tema-escuro .dropdown-link-botao {
+  color: #ff8a8a;
+}
+
+body.tema-escuro .dropdown-link-botao:hover {
+  background-color: #333;
+}
+
+.container-cabecalho {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.titulo-secao {
+  margin-top: 30px;
+}
+
+/* ... (todo o seu CSS de antes) ... */
+
+/* === ESTILOS DO DROPDOWN (ETAPA 4) === */
+
+/* O container do menu de usuário */
+.menu-usuario {
+    position: relative; /* Necessário para o posicionamento do menu */
+}
+
+/* O botão "Olá, admin!" */
+.dropdown-botao {
+    background-color: #495057;
+    color: #fff;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+body.tema-escuro .dropdown-botao {
+    background-color: #343a40;
+}
+
+/* O menu que aparece (escondido por padrão) */
+.dropdown-menu {
+    display: none; /* Escondido por padrão */
+    position: absolute; /* Posição absoluta em relação ao .menu-usuario */
+    right: 0;
+    top: 100%; /* Aparece logo abaixo do botão */
+    min-width: 200px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 100; /* Garante que fique por cima de outros elementos */
+    padding: 10px 0;
+    margin-top: 5px;
+}
+
+/* O "TRUQUE" DO JAVASCRIPT:
+ * Quando o JS adiciona a classe .ativo, o menu é exibido!
+*/
+.dropdown-menu.ativo {
+    display: block;
+}
+
+/* Estilos dos links dentro do menu */
+.dropdown-menu li {
+    list-style: none;
+}
+.dropdown-menu a {
+    display: block;
+    padding: 8px 15px;
+    color: #333;
+    text-decoration: none;
+}
+.dropdown-menu a:hover {
+    background-color: #f4f4f4;
+}
+.dropdown-menu hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 5px 0;
+}
+
+/* Botão "Sair" dentro do dropdown */
+.dropdown-link-botao {
+    background: none;
+    border: none;
+    color: #dc3545; /* Vermelho perigo */
+    padding: 8px 15px;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    font-size: 1rem; /* Garante que tenha o mesmo tamanho dos links */
+}
+.dropdown-link-botao:hover {
+    background-color: #f4f4f4;
+}
+
+/* === TEMA ESCURO PARA O DROPDOWN === */
+body.tema-escuro .dropdown-menu {
+    background-color: #2c2c2c;
+    border-color: #555;
+}
+body.tema-escuro .dropdown-menu a {
+    color: #eee;
+}
+body.tema-escuro .dropdown-menu a:hover {
+    background-color: #3f3f3f;
+}
+body.tema-escuro .dropdown-menu hr {
+    border-top: 1px solid #555;
+}
+body.tema-escuro .dropdown-link-botao {
+    color: #ff8a8a;
+}
+body.tema-escuro .dropdown-link-botao:hover {
+    background-color: #3f3f3f;
+}

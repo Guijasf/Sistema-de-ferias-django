@@ -1,60 +1,59 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="mb-0">Minhas Férias</h2>
+    <div class="container-cabecalho">
+        <h2>Minhas Férias</h2>
         <div>
             {% if is_gestor %}
-                <a href="{% url 'ferias:dashboard_gestor' %}" class="btn btn-outline-secondary">Painel do Gestor</a>
+                <a href="{% url 'ferias:dashboard_gestor' %}" class="botao-secundario">Painel do Gestor</a>
             {% endif %}
-            <a href="{% url 'ferias:solicitar_ferias' %}" class="btn btn-primary">Nova Solicitação</a>
+            <a href="{% url 'ferias:solicitar_ferias' %}" class="botao-principal">Nova Solicitação</a>
         </div>
     </div>
 
     <h4>Meu Próximo Período Disponível</h4>
     {% if periodo_ativo %}
-        <div class="card mb-2">
+        <div class="card">
             <div class="card-body">
                 Período {{ periodo_ativo.data_inicio|date:"Y" }}/{{ periodo_ativo.data_fim|date:"Y" }} - <strong>Saldo: {{ periodo_ativo.saldo_dias }} dias</strong>
             </div>
         </div>
     {% else %}
-        <div class="alert alert-info">Você não possui nenhum período de férias com saldo disponível no momento.</div>
+        <div class="alerta-info">Você não possui nenhum período de férias com saldo disponível no momento.</div>
     {% endif %}
 
-    <h4 class="mt-4">Minhas Solicitações</h4>
-    <div class="table-responsive">
-        <table class="table table-striped table-hover {% if request.session.tema_preferido == 'dark' %}table-dark{% endif %}">
-            <thead class="{% if request.session.tema_preferido != 'dark' %}table-light{% endif %}">
-                <tr>
-                    <th>Período Solicitado</th>
-                    <th>Total Dias</th>
-                    <th>Status</th>
-                    <th>Período de Aquisitivo</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for s in solicitacoes %}
-                <tr>
-                    <td>{{ s.data_inicio|date:"d/m/Y" }} a {{ s.data_fim|date:"d/m/Y" }}</td>
-                    <td>{{ s.total_dias }}</td>
-                    <td>
-                        {% if s.status == 'aprovado' %}
-                            <span class="badge bg-success">Aprovado</span>
-                        {% elif s.status == 'rejeitado' %}
-                            <span class="badge bg-danger">Rejeitado</span>
-                        {% else %}
-                            <span class="badge bg-warning text-dark">Pendente</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ s.periodo_aquisitivo.data_inicio.year }}/{{ s.periodo_aquisitivo.data_fim.year }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="4" class="text-center">Nenhuma solicitação encontrada.</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+    <h4 class="titulo-secao">Minhas Solicitações</h4>
+    <table>
+        <thead>
+            <tr>
+                <th>Período Solicitado</th>
+                <th>Total Dias</th>
+                <th>Status</th>
+                <th>Período Aquisitivo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in solicitacoes %}
+            <tr>
+                <td>{{ s.data_inicio|date:"d/m/Y" }} a {{ s.data_fim|date:"d/m/Y" }}</td>
+                <td>{{ s.total_dias }}</td>
+                <td>
+                    {% if s.status == 'aprovado' %}
+                        <span class="badge badge-sucesso">Aprovado</span>
+                    {% elif s.status == 'rejeitado' %}
+                        <span class="badge badge-perigo">Rejeitado</span>
+                    {% else %}
+                        <span class="badge badge-aviso">Pendente</span>
+                    {% endif %}
+                </td>
+                <td>{{ s.periodo_aquisitivo.data_inicio.year }}/{{ s.periodo_aquisitivo.data_fim.year }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="4" style="text-align: center;">Nenhuma solicitação encontrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 {% endblock %}

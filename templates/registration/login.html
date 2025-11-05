@@ -1,10 +1,44 @@
-
+{% extends "base.html" %}
 
 {% block content %}
-  <h2>Login</h2>
-  <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Login</button>
-  </form>
+<div class="login-container">
+    <div class="login-card">
+        
+        <div class="login-formulario">
+            <div class="login-header">
+                <h2>Bem-vindo de Volta!</h2>
+            </div>
+
+            {% if form.errors %}
+                <div class="alerta-erro">
+                    Usuário ou senha inválidos. Tente novamente.
+                </div>
+            {% endif %}
+
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="campo-form">
+                    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    {{ form.username }}
+                </div>
+                
+                <div class="campo-form">
+                    <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
+                    {{ form.password }}
+                </div>
+                
+                <div class="campo-form">
+                    <button type="submit" class="botao-principal">
+                        Entrar
+                    </button>
+                </div>
+            </form>
+            <hr>
+            <div class="login-links">
+                <a href="#">Esqueceu a senha?</a>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
