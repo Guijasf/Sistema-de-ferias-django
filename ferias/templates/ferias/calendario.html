@@ -1,16 +1,18 @@
-{% extends 'base.html' %}
+{% extends 'ferias/base.html' %}
 {% load static %}
 
 {% block content %}
-  <div class="text-center">  <h2>Calendário de Férias da Equipe</h2>
-    <p>Aqui você pode ver todas as férias já aprovadas.</p>
-  </div>
+  
+  <div class="card">
+    <div class="card-header">
+        <h3 style="margin: 0;">Calendário de Férias da Equipe</h3>
+    </div>
+    <div class="card-body">
+        <p style="font-weight: var(--peso-leve); color: var(--cor-texto-suave); margin-top: -10px; margin-bottom: 20px;">
+            Aqui você pode ver todas as férias já aprovadas.
+        </p>
 
-  <div class="row">
-    <div class="col-md-9 mx-auto">
-      
-      <div id="calendario"></div>
-
+        <div id="calendario"></div>
     </div>
   </div>
 

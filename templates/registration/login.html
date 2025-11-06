@@ -1,44 +1,59 @@
-{% extends "base.html" %}
-
-{% block content %}
-<div class="login-container">
-    <div class="login-card">
-        
-        <div class="login-formulario">
-            <div class="login-header">
-                <h2>Bem-vindo de Volta!</h2>
-            </div>
-
-            {% if form.errors %}
-                <div class="alerta-erro">
-                    Usuário ou senha inválidos. Tente novamente.
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Sistema de Férias</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'ferias/css/style.css' %}">
+</head>
+<body class="login-page {% if request.session.tema_preferido == 'dark' %}tema-escuro{% endif %}">
+    
+    <div class="login-container-externo">
+        <div class="login-card">
+            <div class="login-left">
+                <h1 class="login-titulo">Sistema de Férias</h1>
+                <p class="login-subtitulo">
+                    Gerencie suas férias de forma eficiente e sem burocracia.
+                    Acesse seu painel para solicitar e acompanhar suas solicitações.
+                </p>
                 </div>
-            {% endif %}
-
-            <form method="post">
-                {% csrf_token %}
-                
-                <div class="campo-form">
-                    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-                    {{ form.username }}
-                </div>
-                
-                <div class="campo-form">
-                    <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
-                    {{ form.password }}
-                </div>
-                
-                <div class="campo-form">
-                    <button type="submit" class="botao-principal">
-                        Entrar
-                    </button>
-                </div>
-            </form>
-            <hr>
-            <div class="login-links">
-                <a href="#">Esqueceu a senha?</a>
+            
+            <div class="login-right">
+                <h2 class="form-titulo">Fazer Login</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="alerta-erro">
+                            <p>Nome de usuário ou senha inválidos. Por favor, tente novamente.</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="campo-form">
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                    </div>
+                    
+                    <div class="campo-form">
+                        {{ form.password.label_tag }}
+                        {{ form.password }}
+                    </div>
+                    
+                    <button type="submit" class="botao-principal full-width">Entrar</button>
+                    <div class="login-links">
+                        <a href="#" class="link-texto">Esqueceu a senha?</a>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-</div>
-{% endblock %}
+
+    <script src="{% static 'ferias/js/main.js' %}"></script>
+</body>
+</html>

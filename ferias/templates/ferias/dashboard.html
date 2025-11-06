@@ -1,15 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'ferias/base.html' %}
 {% load static %}
 
 {% block content %}
     <div class="container-cabecalho">
         <h2>Minhas Férias</h2>
-        <div>
-            {% if is_gestor %}
-                <a href="{% url 'ferias:dashboard_gestor' %}" class="botao-secundario">Painel do Gestor</a>
-            {% endif %}
-            <a href="{% url 'ferias:solicitar_ferias' %}" class="botao-principal">Nova Solicitação</a>
-        </div>
     </div>
 
     <h4>Meu Próximo Período Disponível</h4>

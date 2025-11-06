@@ -1,367 +1,635 @@
-body { font-family: sans-serif; margin: 2em; transition: background-color 0.3s, color 0.3s; }
-/* Estilos para o modo escuro */
-body.dark-mode {
-    background-color: #121212;
-    color: #e0e0e0;
-}
-body.dark-mode a { color: #bb86fc; }
-body.dark-mode table { border-color: #444; }
-body.dark-mode th { background-color: #333; }
-body.dark-mode td { border-color: #444; }
+:root {
+    --cor-primaria: #FF4500;           
+    --cor-primaria-hover: #E03E00;     
+    --cor-fundo: #f8f9fa;            
+    --cor-fundo-card: #ffffff;      
+    --cor-texto: #212529;           
+    --cor-texto-suave: #6c757d;    
+    --cor-borda: #dee2e6;           
+    
+    --raio-borda-arredondado: 50px; 
+    --raio-borda-padrao: 8px;       
 
-nav { margin-bottom: 1em; }
-table { border-collapse: collapse; width: 100%; }
-th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-th { background-color: #f2f2f2; }
-
-
-.login-image-side {
-  background-image: url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e");
-  
-  background-size: cover;
-  
-  background-position: center;
+   
+    --fonte-principal: 'Lato', sans-serif;
+    --peso-titulo: 700;           
+    --peso-normal: 400;           
+    --peso-leve: 300;             
 }
 
-::before,
-::after {
+
+*, *::before, *::after {
   box-sizing: border-box;
-}
-
-
-body.tema-escuro {
-  background-color: #121212;
-  color: #e0e0e0;
 }
 
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  margin: 0;
-  line-height: 1.5;
+    font-family: var(--fonte-principal);
+    font-weight: var(--peso-normal); 
+    background-color: var(--cor-fundo);
+    color: var(--cor-texto);
+    margin: 0;
+    line-height: 1.6; 
 }
 
+h1, h2, h3, h4, h5, h6 {
+    font-weight: var(--peso-titulo); 
+    text-transform: none;            
+    margin-top: 0;
+}
+
+p {
+    font-weight: var(--peso-leve); 
+}
+
+
 .container-principal {
-  max-width: 1100px;
-  margin: 20px auto;
-  padding: 0 15px;
+    max-width: 1100px;
+    margin: 30px auto; 
+    padding: 0 15px;
 }
 
 .navegacao-principal {
-  width: 100%;
-  background-color: #212529;
-  padding: 10px 0;
-  border-bottom: 1px solid #333;
+    width: 100%;
+    background-color: var(--cor-fundo-card); 
+    padding: 15px 0;
+    border-bottom: 1px solid var(--cor-borda);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
 }
 
 .navegacao-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #fff;
-  text-decoration: none;
+    font-family: var(--fonte-principal);
+    font-size: 1.5rem;
+    font-weight: var(--peso-titulo);
+    color: var(--cor-primaria); 
+    text-decoration: none;
+    text-transform: uppercase;
 }
 
-.menu-principal ul,
-.menu-principal li{
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.menu-principal ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
 .menu-principal li {
-  display: inline-block;
-  margin-left: 20px;
+    display: inline-block;
+    margin-left: 25px;
 }
 
 .menu-principal a {
-  color: #ccc;
-  text-decoration: none;
-  font-size: 1rem;
+    color: var(--cor-texto-suave); 
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: var(--peso-normal);
+    transition: color 0.2s;
 }
-
 .menu-principal a:hover {
-  color: #fff;
+    color: var(--cor-primaria);
 }
 
-table {
-  width: 100%;
-  border-collapse: colapse;
-  margin-bottom: 20px;
+.menu-navegacao-container {
+    display: flex;
+    align-items: center;
+}
+.menu-acoes-usuario {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    margin-left: 25px;
 }
 
-th, td {
-  border: 12px 15px;
-  border-bottom: 1px solid #ddd;
-  text-align: left;
-
-}
-
-thead th {
-  background-color: #f4f4f4;
-  font-weight: bold;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="date"],
-select,
-textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0 15px 0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.campo-form {
-  margin-bottom: 20px;
-}
-
-label {
-  font-weight: 20px;
-}
-
-label {
-  font-weight: bold;
-  display: block;
-}
-
-
+.botao-acao-principal,
 .botao-principal,
 .botao-sucesso,
 .botao-perigo,
 .botao-secundario {
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
-  text-decoration: none;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s;
+    display: inline-block;
+    padding: 10px 25px;
+    font-size: 0.9rem; 
+    font-weight: var(--peso-titulo); 
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: var(--raio-borda-arredondado);
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+    text-transform: uppercase;
+}
+.botao-acao-principal:hover,
+.botao-principal:hover,
+.botao-sucesso:hover,
+.botao-perigo:hover,
+.botao-secundario:hover {
+    transform: translateY(-2px);
+}
+
+.botao-acao-principal,
+.botao-principal,
+.botao-sucesso {
+    background-color: var(--cor-primaria);
+    box-shadow: 0 4px 15px rgba(255, 69, 0, 0.2); 
+}
+.botao-acao-principal:hover,
+.botao-principal:hover,
+.botao-sucesso:hover {
+    background-color: var(--cor-primaria-hover);
+}
+.botao-secundario {
+    background-color: #E9ECEF;
+    color: var(--cor-texto);
+    box-shadow: none;
+}
+.botao-secundario:hover {
+    background-color: #dee2e6;
+}
+.botao-perigo {
+    background-color: #dc3545;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+}
+.botao-perigo:hover {
+    background-color: #bb2d3b;
 }
 
 
-.botao-principal { background-color: #0d6efd; } 
-.botao-sucesso { background-color: #198754; } 
-.botao-perigo { background-color: #dc3545; }  
-.botao-secundario { background-color: #6c757d; }
-
-.link-botao {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #0d6efd;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 5px;
+.campo-form {
+    margin-bottom: 20px;
 }
-.link-botao {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #0d6efd;
-  color: #fff;
-  text-decoration: none;
-  border-radius: 5px;
+.campo-form label {
+    font-weight: var(--peso-titulo);
+    text-transform: none; 
+    font-size: 0.9rem;
+    display: block;
+    margin-bottom: 8px;
+    color: var(--cor-texto-suave);
 }
 
-.link-botao:hover { background-color: #0b5ed7; }
+.input-form {
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 1rem;
+    font-family: var(--fonte-principal);
+    font-weight: var(--peso-normal); 
+    color: var(--cor-texto);
+    background-color: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda-padrao); 
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.input-form:focus {
+    border-color: var(--cor-primaria);
+    box-shadow: 0 0 8px rgba(255, 69, 0, 0.2);
+    outline: none;
+}
+.input-form::placeholder {
+    color: var(--cor-texto-suave);
+    font-weight: var(--peso-leve);
+}
 
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+th, td {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--cor-borda);
+    text-align: left;
+    font-weight: var(--peso-normal);
+}
+thead th {
+    background-color: var(--cor-fundo-card);
+    font-weight: var(--peso-titulo);
+    text-transform: none; 
+    font-size: 0.9rem;
+    color: var(--cor-texto-suave);
+}
+
+
+.card {
+    background-color: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda-padrao);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.card-header {
+    padding: 20px 25px;
+    background-color: var(--cor-fundo-card);
+    border-bottom: 1px solid var(--cor-borda);
+}
 .card-body {
-  padding: 20px;
-}
-
-.bedge {
-  display: inline-block;
-  padding: 5px 10px;
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: #fff;
-  border-radius: 20px;
-}
-.bedge-ativo { background-color: #198754; }
-.bedge-inativo { background-color: #dc3545; } 
-.bedge-pendente { background-color: #ffc107; color: #212529; }
-
-
-body.tema-escuro {
-  background-color: #121212;
-  color: #e0e0e0;
-}
-
-body.tema-escuro th,
-body.tema-escuro td {
-  border-bottom: 1px solid #444;
-}
-body.tema-escuro thead th {
-  background-color: #1e1e1e;
+    padding: 25px;
+    font-weight: var(--peso-leve); 
 }
 
 
-body.tem-escuro .card {
-  background-color: #1e1e1e;
-  border-color: #444;
-  box-shadow: none;
+.badge {
+    display: inline-block;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    font-weight: var(--peso-titulo);
+    border-radius: var(--raio-borda-arredondado);
+    color: #fff;
+    text-transform: uppercase;
 }
+.badge-sucesso { background-color: #198754; }
+.badge-perigo { background-color: #dc3545; }
+.badge-aviso { background-color: #ffc107; color: #000; }
 
-body.tema-escuro .card-header {
-  background-color: #2c2c2c;
-  border-bottom: 1px solid #444;
+
+.dropdown-usuario {
+    position: relative;
+    margin-left: 15px;
 }
-
-body.tema-escuro a {
-  color: #6ea8fe;
-
+.dropdown-botao-icone {
+    background: none; border: none; cursor: pointer;
+    font-size: 2rem; color: var(--cor-texto);
+    padding: 0; line-height: 1;
 }
+.dropdown-botao-icone:hover { color: var(--cor-primaria); }
 
-body.tema-escuro .menu-principal a{
-  color: #bbb;
+.dropdown-menu {
+    display: none; position: absolute; right: 0; top: 100%;
+    min-width: 200px; background-color: var(--cor-fundo-card);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio-borda-padrao);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    z-index: 100; padding: 10px 0; margin-top: 10px;
 }
+.dropdown-menu.ativo { display: block; }
 
-body.tema-escuro .menu-principal a:hover {
-  color: #fff;
+.dropdown-menu li { list-style: none; }
+.dropdown-menu a {
+    display: block; padding: 8px 15px;
+    color: var(--cor-texto); text-decoration: none;
+    font-weight: var(--peso-normal);
 }
-
+.dropdown-menu a:hover { background-color: var(--cor-fundo); }
+.dropdown-menu hr { border: 0; border-top: 1px solid var(--cor-borda); margin: 5px 0; }
+.dropdown-info {
+    display: block; padding: 8px 15px;
+    color: var(--cor-texto-suave); font-style: italic; font-size: 0.9rem;
+}
 .dropdown-link-botao {
-  background: none;
-  border: none;
-  color: #dc3545;
-  padding: 5px 10px;
-  text-align: left;
-  width: 100%;
-  cursor: pointer;
+    background: none; border: none; color: var(--cor-primaria);
+    padding: 8px 15px; text-align: left; width: 100%;
+    cursor: pointer; font-size: 1rem; font-family: var(--fonte-principal);
+    font-weight: var(--peso-normal);
 }
+.dropdown-link-botao:hover { background-color: var(--cor-fundo); }
 
-.dropdown-link-botao:hover {
-  background-color: #f4f4f4;
-}
-
-body.tema-escuro .dropdown-link-botao {
-  color: #ff8a8a;
-}
-
-body.tema-escuro .dropdown-link-botao:hover {
-  background-color: #333;
-}
 
 .container-cabecalho {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 .titulo-secao {
-  margin-top: 30px;
+    margin-top: 30px;
+    margin-bottom: 15px;
 }
 
-/* ... (todo o seu CSS de antes) ... */
-
-/* === ESTILOS DO DROPDOWN (ETAPA 4) === */
-
-/* O container do menu de usuário */
-.menu-usuario {
-    position: relative; /* Necessário para o posicionamento do menu */
+.login-page {
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; background-color: var(--cor-fundo);
 }
-
-/* O botão "Olá, admin!" */
-.dropdown-botao {
-    background-color: #495057;
-    color: #fff;
-    padding: 8px 12px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+.login-container-externo {
+    width: 100%; max-width: 1000px; padding: 20px;
 }
-body.tema-escuro .dropdown-botao {
-    background-color: #343a40;
+.login-card {
+    display: flex; background-color: var(--cor-fundo-card);
+    border-radius: var(--raio-borda-padrao);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    overflow: hidden; min-height: 500px;
 }
-
-/* O menu que aparece (escondido por padrão) */
-.dropdown-menu {
-    display: none; /* Escondido por padrão */
-    position: absolute; /* Posição absoluta em relação ao .menu-usuario */
-    right: 0;
-    top: 100%; /* Aparece logo abaixo do botão */
-    min-width: 200px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    z-index: 100; /* Garante que fique por cima de outros elementos */
-    padding: 10px 0;
-    margin-top: 5px;
+.login-left {
+    flex: 1; background-color: var(--cor-fundo);
+    padding: 40px; display: flex; flex-direction: column;
+    justify-content: center; align-items: flex-start;
+    color: var(--cor-texto);
 }
-
-/* O "TRUQUE" DO JAVASCRIPT:
- * Quando o JS adiciona a classe .ativo, o menu é exibido!
-*/
-.dropdown-menu.ativo {
-    display: block;
+.login-right {
+    flex: 1; padding: 40px; display: flex;
+    flex-direction: column; justify-content: center;
 }
-
-/* Estilos dos links dentro do menu */
-.dropdown-menu li {
-    list-style: none;
+.login-titulo {
+    font-size: 2.5rem;
+    color: var(--cor-primaria);
+    margin-bottom: 20px; line-height: 1.1;
+    text-transform: uppercase;
 }
-.dropdown-menu a {
-    display: block;
-    padding: 8px 15px;
-    color: #333;
+.login-subtitulo {
+    font-size: 1.1rem;
+    color: var(--cor-texto-suave);
+    line-height: 1.6;
+    font-weight: var(--peso-leve); 
+}
+.form-titulo {
+    font-size: 2rem;
+    margin-bottom: 30px;
+    text-align: center;
+    color: var(--cor-texto);
+    text-transform: none;
+}
+.botao-principal.full-width {
+    width: 100%; margin-top: 20px;
+}
+.login-links {
+    text-align: center; margin-top: 20px;
+}
+.login-links .link-texto {
+    color: var(--cor-texto-suave);
     text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: var(--peso-normal);
 }
-.dropdown-menu a:hover {
-    background-color: #f4f4f4;
-}
-.dropdown-menu hr {
-    border: 0;
-    border-top: 1px solid #eee;
-    margin: 5px 0;
+.login-links .link-texto:hover {
+    color: var(--cor-primaria);
+    text-decoration: underline;
 }
 
-/* Botão "Sair" dentro do dropdown */
-.dropdown-link-botao {
+@media (max-width: 768px) {
+    .login-card { flex-direction: column; min-height: auto; }
+    .login-left {
+        text-align: center; align-items: center;
+        padding-bottom: 20px; border-bottom: 1px solid var(--cor-borda);
+    }
+    .login-titulo { font-size: 2rem; }
+    .form-titulo { margin-top: 20px; }
+}
+
+body.tema-escuro { background-color: #121212; color: #e0e0e0; }
+body.tema-escuro .navegacao-principal { background-color: #1a1a1a; border-color: #333; }
+body.tema-escuro .logo { color: var(--cor-primaria); }
+body.tema-escuro .menu-principal a { color: #aaa; }
+body.tema-escuro .menu-principal a:hover { color: #fff; }
+body.tema-escuro .dropdown-botao-icone { color: #eee; }
+body.tema-escuro .dropdown-menu { background-color: #2c2c2c; border-color: #555; }
+body.tema-escuro .dropdown-menu a { color: #eee; }
+body.tema-escuro .dropdown-menu a:hover { background-color: #3f3f3f; }
+body.tema-escuro .dropdown-menu hr { border-top: 1px solid #555; }
+body.tema-escuro .dropdown-info { color: #aaa; }
+body.tema-escuro .dropdown-link-botao { color: #ff8a8a; }
+body.tema-escuro .dropdown-link-botao:hover { background-color: #3f3f3f; }
+body.tema-escuro th, body.tema-escuro td { border-bottom: 1px solid #444; }
+body.tema-escuro thead th { background-color: #1e1e1e; color: #aaa; }
+body.tema-escuro .input-form { background-color: #2c2c2c; color: #eee; border-color: #555; }
+body.tema-escuro .card { background-color: #1e1e1e; border-color: #444; }
+body.tema-escuro .card-header { background-color: #2c2c2c; border-bottom: 1px solid #444; }
+body.tema-escuro .login-page { background-color: #0d0d0d; }
+body.tema-escuro .login-card { background-color: #1a1a1a; }
+body.tema-escuro .login-left { background-color: #121212; color: #e0e0e0; }
+body.tema-escuro .login-subtitulo { color: #aaa; }
+body.tema-escuro .form-titulo { color: #e0e0e0; }
+body.tema-escuro .login-links .link-texto { color: #aaa; }
+
+
+
+.alerta-info {
+    padding: 15px 20px;
+    background-color: #f0f4f8; /* Azul bem claro */
+    color: #31708f;
+    border: 1px solid #bce8f1;
+    border-radius: var(--raio-borda-padrao);
+}
+
+/* === 12. Estilos do Modal (Pop-up) === */
+.modal {
+    display: none; /* Escondido por padrão */
+    position: fixed; /* Fica por cima de tudo */
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5); /* Fundo escuro transparente */
+    
+    /* Usa flexbox para centralizar o conteúdo */
+    justify-content: center;
+    align-items: center;
+}
+
+/* O JavaScript vai adicionar a classe .ativo para mostrar o modal */
+.modal.ativo {
+    display: flex;
+}
+
+.modal-conteudo {
+    background-color: var(--cor-fundo-card);
+    border-radius: var(--raio-borda-padrao);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 100%;
+    max-width: 500px; /* Largura do pop-up */
+    animation: modalFadeIn 0.3s ease-out; /* Efeito de 'surgir' */
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--cor-borda);
+}
+.modal-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+/* O botão 'X' para fechar */
+.modal-fechar {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+    color: #aaa;
+    cursor: pointer;
     background: none;
     border: none;
-    color: #dc3545; /* Vermelho perigo */
-    padding: 8px 15px;
-    text-align: left;
-    width: 100%;
-    cursor: pointer;
-    font-size: 1rem; /* Garante que tenha o mesmo tamanho dos links */
 }
-.dropdown-link-botao:hover {
-    background-color: #f4f4f4;
+.modal-fechar:hover {
+    color: var(--cor-texto);
 }
 
-/* === TEMA ESCURO PARA O DROPDOWN === */
-body.tema-escuro .dropdown-menu {
-    background-color: #2c2c2c;
-    border-color: #555;
+.modal-body {
+    padding: 20px;
 }
-body.tema-escuro .dropdown-menu a {
+.modal-body p {
+    font-weight: var(--peso-normal);
+}
+.modal-body strong {
+    font-weight: var(--peso-titulo);
+    color: var(--cor-primaria);
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end; /* Alinha botões à direita */
+    gap: 10px; /* Espaço entre os botões */
+    padding: 15px 20px;
+    border-top: 1px solid var(--cor-borda);
+}
+
+/* Animação de entrada do modal */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* === TEMA ESCURO para Alertas e Modais === */
+body.tema-escuro .alerta-info {
+    background-color: #1a2a33;
+    color: #a3daff;
+    border-color: #2a5a75;
+}
+body.tema-escuro .modal-conteudo {
+    background-color: #1e1e1e;
+    border-color: #444;
+}
+body.tema-escuro .modal-header,
+body.tema-escuro .modal-footer {
+    border-color: #444;
+}
+body.tema-escuro .modal-fechar {
+    color: #777;
+}
+body.tema-escuro .modal-fechar:hover {
     color: #eee;
 }
-body.tema-escuro .dropdown-menu a:hover {
-    background-color: #3f3f3f;
+
+
+
+.fc {
+    font-family: var(--fonte-principal);
 }
-body.tema-escuro .dropdown-menu hr {
-    border-top: 1px solid #555;
+
+/* Estiliza os botões (Prev, Next, Today) para parecerem os nossos */
+.fc .fc-button {
+    background-color: #E9ECEF; /* Nosso botão secundário */
+    color: var(--cor-texto);
+    border: none;
+    padding: 8px 15px;
+    font-weight: var(--peso-titulo);
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    border-radius: var(--raio-borda-arredondado);
+    transition: background-color 0.2s;
+    box-shadow: none;
 }
-body.tema-escuro .dropdown-link-botao {
-    color: #ff8a8a;
+
+/* O botão 'today' (hoje) será da nossa cor primária laranja */
+.fc .fc-today-button {
+    background-color: var(--cor-primaria);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(255, 69, 0, 0.2);
 }
-body.tema-escuro .dropdown-link-botao:hover {
-    background-color: #3f3f3f;
+
+.fc .fc-button:hover {
+    background-color: #dee2e6;
+}
+.fc .fc-today-button:hover {
+    background-color: var(--cor-primaria-hover);
+}
+
+/* Cor dos eventos no calendário (vamos usar um verde sucesso) */
+.fc-daygrid-event {
+    background-color: #198754;
+    border: none;
+    border-radius: 4px;
+    padding: 2px 5px;
+}
+
+/* Título do mês (ex: "Novembro 2025") */
+.fc .fc-toolbar-title {
+    font-weight: var(--peso-titulo);
+    font-size: 1.8rem;
+}
+
+/* Cabeçalho da tabela (Dom, Seg, Ter...) */
+.fc .fc-col-header-cell-cushion {
+    font-weight: var(--peso-titulo);
+    color: var(--cor-texto-suave);
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+/* Remove a borda feia do dia de "hoje" */
+.fc .fc-day-today {
+    background-color: var(--cor-fundo);
+}
+
+/* === TEMA ESCURO para o Calendário === */
+body.tema-escuro .fc .fc-button {
+    background-color: #343a40;
+    color: #eee;
+}
+body.tema-escuro .fc .fc-today-button {
+    background-color: var(--cor-primaria);
+}
+body.tema-escuro .fc .fc-toolbar-title {
+    color: #eee;
+}
+body.tema-escuro .fc .fc-col-header-cell-cushion {
+    color: #aaa;
+}
+body.tema-escuro .fc .fc-day-today {
+    background-color: #1a1a1a;
+}
+/* Muda a cor das bordas da tabela do calendário */
+body.tema-escuro .fc-theme-standard td {
+    border-color: #444;
+}
+/* CORREÇÃO APLICADA AQUI */
+body.tema-escuro .fc-theme-standard th {
+    border-color: #444;
+    background-color: #1e1e1e; /* Fundo escuro para o cabeçalho */
+}
+/* Cor do número do dia */
+body.tema-escuro .fc .fc-daygrid-day-number {
+    color: #eee;
+}
+body.tema-escuro .fc .fc-day-other .fc-daygrid-day-number {
+    color: #777; /* Dias do mês anterior/seguinte */
+}
+
+
+/* === ESTILO PARA CONTEÚDO CENTRALIZADO (FORMULÁRIOS) === */
+.container-centralizado {
+    max-width: 600px; /* Mais estreito que o container principal */
+    margin: 30px auto;
+    padding: 0 15px;
+}
+.botao-principal.full-width {
+    width: 100%;
+}
+.erro-campo {
+    color: #dc3545;
+    font-size: 0.9rem;
+    font-weight: var(--peso-normal);
+    margin-top: 5px;
+}
+.alerta-erro {
+    padding: 15px;
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: var(--raio-borda-padrao);
+    margin-bottom: 20px;
+}
+body.tema-escuro .alerta-erro {
+    background-color: #4a272a;
+    color: #ffbaba;
+    border-color: #a44a4a;
 }

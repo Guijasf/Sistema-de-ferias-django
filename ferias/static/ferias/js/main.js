@@ -1,30 +1,61 @@
-// ferias/static/ferias/js/main.js
-
-/*
- * Função para controlar o Dropdown do Menu de Usuário
- */
 document.addEventListener('DOMContentLoaded', function() {
     
-    const dropdownBotao = document.querySelector('.dropdown-botao');
+    const dropdownBotao = document.querySelector('.dropdown-botao-icone');
     const dropdownMenu = document.querySelector('.dropdown-menu');
 
-    // Se não encontrarmos o botão (ex: na tela de login), não faz nada.
     if (dropdownBotao) {
         
-        // 1. Ação de clicar no botão
         dropdownBotao.addEventListener('click', function(e) {
-            e.stopPropagation(); // Impede que o clique "vaze" para a janela
-            // A mágica é aqui: "toggle" adiciona a classe se ela não existe,
-            // e remove se ela já existe.
+            e.stopPropagation();
             dropdownMenu.classList.toggle('ativo');
         });
 
-        // 2. Ação de clicar em qualquer lugar fora do menu
         window.addEventListener('click', function() {
-            // Se o menu estiver ativo, remove a classe para fechá-lo
             if (dropdownMenu.classList.contains('ativo')) {
                 dropdownMenu.classList.remove('ativo');
             }
         });
     }
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    
+    // 1. Encontra todos os botões que abrem um modal
+    const modalTriggers = document.querySelectorAll('.js-modal-trigger');
+    
+    // 2. Encontra todos os botões que fecham um modal
+    const modalCloses = document.querySelectorAll('.js-modal-close');
+
+    // Adiciona o 'click' para cada botão que ABRE
+    modalTriggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+            // Pega o ID do modal alvo (ex: '#rejeitarModal-1')
+            const targetSelector = trigger.getAttribute('data-target');
+            const modal = document.querySelector(targetSelector);
+            
+            if (modal) {
+                modal.classList.add('ativo');
+            }
+        });
+    });
+
+    // Adiciona o 'click' para cada botão que FECHA
+    modalCloses.forEach(close => {
+        close.addEventListener('click', () => {
+            // Encontra o modal "pai" mais próximo e o fecha
+            const modal = close.closest('.modal');
+            if (modal) {
+                modal.classList.remove('ativo');
+            }
+        });
+    });
+
+    // 3. Fecha o modal se o usuário clicar fora dele (no fundo escuro)
+    window.addEventListener('click', function(e) {
+        if (e.target.classList.contains('modal')) {
+            e.target.classList.remove('ativo');
+        }
+    });
+
 });
