@@ -1,122 +1,86 @@
 # ferias/forms.py
 
-from django import forms
+from django import forms # <--- A LINHA QUE ESTAVA FALTANDO!
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
-from .models import SolicitacaoFerias, PeriodoAquisitivo, Funcionario
+from .models import PerfilUsuario, PeriodoAquisitivo, SolicitacaoFerias
 from django.core.exceptions import ValidationError
 from django.contrib.auth.forms import AuthenticationForm
 
 class PeriodoAquisitivoChoiceField(forms.ModelChoiceField):
     def label_from_instance(self, obj):
-        return f"Período {obj.data_inicio.year}/{obj.data_fim.year} (Saldo: {obj.saldo_dias} dias)"
+        return f"Período {obj.data_inicio_aquisitivo.year}/{obj.data_fim_aquisitivo.year} (Saldo: {obj.dias_disponiveis} dias)"
 
 class SolicitacaoFeriasForm(forms.ModelForm):
-    periodo_aquisitivo = PeriodoAquisitivoChoiceField(
-        queryset=PeriodoAquisitivo.objects.none(),
-        label="Descontar do Período Aquisitivo",
-        empty_label="--- Carregando... ---"
-    )
+    # REMOVEMOS o campo 'periodo_aquisitivo_choice' daqui
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
         
-        if self.user:
-            try:
-                funcionario = self.user.funcionario
-                um_ano_de_casa = funcionario.data_nomeacao + relativedelta(years=1)
-                
-                if timezone.now().date() < um_ano_de_casa:
-                    self.fields['periodo_aquisitivo'].empty_label = f"--- Você só pode solicitar após {um_ano_de_casa.strftime('%d/%m/%Y')} ---"
-                else:
-                    queryset = PeriodoAquisitivo.objects.filter(
-                        funcionario=funcionario, 
-                        saldo_dias__gt=0
-                    ).order_by('data_inicio')
-                    
-                    primeiro_periodo_valido = queryset.first()
-                    
-                    if primeiro_periodo_valido:
-                        self.fields['periodo_aquisitivo'].queryset = PeriodoAquisitivo.objects.filter(pk=primeiro_periodo_valido.pk)
-                    else:
-                        self.fields['periodo_aquisitivo'].empty_label = "--- Nenhum período com saldo disponível ---"
-            
-            except Funcionario.DoesNotExist:
-                self.fields['periodo_aquisitivo'].empty_label = "--- Erro: Perfil de funcionário não encontrado ---"
-
+        # O __init__ agora fica muito mais simples, só aplica as classes
         self.fields['data_inicio'].widget.attrs.update({'class': 'input-form'})
         self.fields['data_fim'].widget.attrs.update({'class': 'input-form'})
-        self.fields['periodo_aquisitivo'].widget.attrs.update({'class': 'input-form'})
 
     class Meta:
         model = SolicitacaoFerias
-        fields = ['data_inicio', 'data_fim', 'periodo_aquisitivo']
+        fields = ['data_inicio', 'data_fim']
     
     def clean(self):
         cleaned_data = super().clean()
         data_inicio = cleaned_data.get("data_inicio")
         data_fim = cleaned_data.get("data_fim")
-        periodo_selecionado = cleaned_data.get("periodo_aquisitivo")
         
-        if not (data_inicio and data_fim and periodo_selecionado):
-            if not periodo_selecionado:
-                try:
-                    funcionario = self.user.funcionario
-                    um_ano_de_casa = funcionario.data_nomeacao + relativedelta(years=1)
-                    if timezone.now().date() < um_ano_de_casa:
-                        raise ValidationError(f"Você ainda não completou 1 ano de casa. Só poderá solicitar férias após {um_ano_de_casa.strftime('%d/%m/%Y')}.")
-                    else:
-                        raise ValidationError("Nenhum período com saldo disponível foi encontrado.")
-                except Funcionario.DoesNotExist:
-                    raise ValidationError("Perfil de funcionário não configurado.")
-            return cleaned_data
+        if not (data_inicio and data_fim):
+            return cleaned_data # Validação básica
 
-        periodo_mais_antigo_com_saldo = PeriodoAquisitivo.objects.filter(
-            funcionario__user=self.user,
-            saldo_dias__gt=0
-        ).order_by('data_inicio').first()
+        perfil = self.user.perfil
 
-        if periodo_mais_antigo_com_saldo and periodo_selecionado != periodo_mais_antigo_com_saldo:
-            raise ValidationError(
-                f"Ação inválida. Você deve primeiro utilizar o saldo do seu período aquisitivo mais antigo: "
-                f"{periodo_mais_antigo_com_saldo.data_inicio.year}/{periodo_mais_antigo_com_saldo.data_fim.year}."
-            )
-
+        # 1. Regra de data fim/início
         if data_fim < data_inicio:
             raise ValidationError("A data de término não pode ser anterior à data de início.")
 
+        # 2. Regra de 10 dias (TODO: Mudar para dias úteis)
         total_dias_solicitados = (data_fim - data_inicio).days + 1
-
         if total_dias_solicitados < 10:
             raise ValidationError("O período mínimo para solicitação de férias é de 10 dias.")
 
-        funcionario = self.user.funcionario
-        um_ano_de_casa = funcionario.data_nomeacao + relativedelta(years=1)
+        # 3. Regra de 1 ano de casa
+        um_ano_de_casa = perfil.data_contratacao + relativedelta(years=1)
         if data_inicio < um_ano_de_casa:
             raise ValidationError(f"Você só pode solicitar férias após {um_ano_de_casa.strftime('%d/%m/%Y')}.")
 
-        if periodo_selecionado.saldo_dias < total_dias_solicitados:
+        # 4. NOVA REGRA DE SALDO "CASCATA" (Regra dos 45 dias)
+        periodos_com_saldo = PeriodoAquisitivo.objects.filter(
+            perfil=perfil,
+            dias_disponiveis__gt=0
+        ).order_by('data_inicio_aquisitivo')
+
+        saldo_total_disponivel = sum(p.dias_disponiveis for p in periodos_com_saldo)
+
+        if saldo_total_disponivel < total_dias_solicitados:
             raise ValidationError(
-                f"Saldo insuficiente no período selecionado. "
+                f"Saldo total insuficiente para esta solicitação. "
                 f"Dias solicitados: {total_dias_solicitados}, "
-                f"Saldo disponível no período: {periodo_selecionado.saldo_dias}"
+                f"Seu saldo total disponível é: {saldo_total_disponivel} dias."
             )
 
-        setor_do_funcionario = funcionario.setor
-        ferias_aprovadas_no_setor = SolicitacaoFerias.objects.filter(
-            solicitante__funcionario__setor=setor_do_funcionario,
-            status='aprovado'
-        ).exclude(pk=self.instance.pk)
+        # 5. Regra de Conflito de Setor (agora Secretaria)
+        secretaria_do_funcionario = perfil.secretaria
+        if secretaria_do_funcionario:
+            ferias_aprovadas_na_secretaria = SolicitacaoFerias.objects.filter(
+                solicitante__perfil__secretaria=secretaria_do_funcionario,
+                status__in=['PENDENTE_RH', 'APROVADA_FINAL']
+            ).exclude(pk=self.instance.pk)
 
-        for ferias_existente in ferias_aprovadas_no_setor:
-            if (data_inicio <= ferias_existente.data_fim and data_fim >= ferias_existente.data_inicio):
-                raise ValidationError(
-                    f"Conflito de datas! O funcionário {ferias_existente.solicitante.username} "
-                    f"do mesmo setor já tem férias marcadas entre "
-                    f"{ferias_existente.data_inicio.strftime('%d/%m/%Y')} e "
-                    f"{ferias_existente.data_fim.strftime('%d/%m/%Y')}."
-                )
+            for ferias_existente in ferias_aprovadas_na_secretaria:
+                if (data_inicio <= ferias_existente.data_fim and data_fim >= ferias_existente.data_inicio):
+                    raise ValidationError(
+                        f"Conflito de datas! O funcionário {ferias_existente.solicitante.username} "
+                        f"da mesma secretaria já tem férias marcadas entre "
+                        f"{ferias_existente.data_inicio.strftime('%d/%m/%Y')} e "
+                        f"{ferias_existente.data_fim.strftime('%d/%m/%Y')}."
+                    )
 
         return cleaned_data
 

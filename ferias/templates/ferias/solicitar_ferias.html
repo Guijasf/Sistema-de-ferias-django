@@ -35,14 +35,6 @@
                     {% endfor %}
                 </div>
 
-                <div class="campo-form">
-                    {{ form.periodo_aquisitivo.label_tag }}
-                    {{ form.periodo_aquisitivo }}
-                     {% for error in form.periodo_aquisitivo.errors %}
-                        <div class="erro-campo">{{ error }}</div>
-                    {% endfor %}
-                </div>
-                
                 <button type="submit" class="botao-principal full-width">Enviar Solicitação</button>
                 <a href="{% url 'ferias:dashboard' %}" class="botao-secundario" style="width: 100%; text-align: center; margin-top: 10px;">Cancelar</a>
             </form>

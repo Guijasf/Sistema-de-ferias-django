@@ -4,13 +4,14 @@
 {% block content %}
     <div class="container-cabecalho">
         <h2>Minhas Férias</h2>
-    </div>
+        </div>
 
     <h4>Meu Próximo Período Disponível</h4>
     {% if periodo_ativo %}
         <div class="card">
             <div class="card-body">
-                Período {{ periodo_ativo.data_inicio|date:"Y" }}/{{ periodo_ativo.data_fim|date:"Y" }} - <strong>Saldo: {{ periodo_ativo.saldo_dias }} dias</strong>
+                Período {{ periodo_ativo.data_inicio_aquisitivo|date:"Y" }}/{{ periodo_ativo.data_fim_aquisitivo|date:"Y" }} 
+                - <strong>Saldo: {{ periodo_ativo.dias_disponiveis }} dias</strong>
             </div>
         </div>
     {% else %}
@@ -24,8 +25,7 @@
                 <th>Período Solicitado</th>
                 <th>Total Dias</th>
                 <th>Status</th>
-                <th>Período Aquisitivo</th>
-            </tr>
+                <th>Período(s) Aquisitivo(s)</th> </tr>
         </thead>
         <tbody>
             {% for s in solicitacoes %}
@@ -33,15 +33,22 @@
                 <td>{{ s.data_inicio|date:"d/m/Y" }} a {{ s.data_fim|date:"d/m/Y" }}</td>
                 <td>{{ s.total_dias }}</td>
                 <td>
-                    {% if s.status == 'aprovado' %}
-                        <span class="badge badge-sucesso">Aprovado</span>
-                    {% elif s.status == 'rejeitado' %}
-                        <span class="badge badge-perigo">Rejeitado</span>
-                    {% else %}
-                        <span class="badge badge-aviso">Pendente</span>
+                    {% if s.status == 'APROVADA_FINAL' %}
+                        <span class="badge badge-sucesso">Aprovada</span>
+                    {% elif s.status == 'REJEITADA' %}
+                        <span class="badge badge-perigo">Rejeitada</span>
+                    {% elif s.status == 'PENDENTE_RH' %}
+                        <span class="badge badge-aviso">Pendente (RH)</span>
+                    {% else %} <span class="badge badge-aviso">Pendente (Gestor)</span>
                     {% endif %}
                 </td>
-                <td>{{ s.periodo_aquisitivo.data_inicio.year }}/{{ s.periodo_aquisitivo.data_fim.year }}</td>
+                <td>
+                    {% for periodo in s.periodos_utilizados.all %}
+                        {{ periodo.data_inicio_aquisitivo.year }}/{{ periodo.data_fim_aquisitivo.year }}
+                        {% if not forloop.last %}e {% endif %} {% empty %}
+                        N/A
+                    {% endfor %}
+                </td>
             </tr>
             {% empty %}
             <tr>
