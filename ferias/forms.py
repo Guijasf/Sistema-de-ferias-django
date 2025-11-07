@@ -2,6 +2,7 @@
 
 from django import forms # <--- A LINHA QUE ESTAVA FALTANDO!
 from django.utils import timezone
+from django.contrib.auth.models import User 
 from dateutil.relativedelta import relativedelta
 from .models import PerfilUsuario, PeriodoAquisitivo, SolicitacaoFerias
 from django.core.exceptions import ValidationError
@@ -94,3 +95,41 @@ class CustomLoginForm(AuthenticationForm):
         self.fields['password'].widget.attrs.update(
             {'class': 'input-form', 'placeholder': 'Senha'}
         )
+
+# ==========================================================
+# ||         ETAPA 2: NOVOS FORMULÁRIOS DE PERFIL         ||
+# ==========================================================
+
+# --- Formulário 1: Para editar os dados do USER (Nome, Sobrenome, Email) ---
+class UserEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Adiciona nossas classes CSS personalizadas
+        self.fields['first_name'].widget.attrs.update({'class': 'input-form'})
+        self.fields['last_name'].widget.attrs.update({'class': 'input-form'})
+        self.fields['email'].widget.attrs.update({'class': 'input-form'})
+
+
+# --- Formulário 2: Para editar os dados do PERFILUSUARIO (Foto, Cargo, etc.) ---
+class PerfilUsuarioEditForm(forms.ModelForm):
+    class Meta:
+        model = PerfilUsuario
+        fields = ['foto_perfil', 'data_nascimento', 'matricula', 'cargo', 'secretaria']
+        
+        # Garante que o campo de data use o seletor de data do navegador
+        widgets = {
+            'data_nascimento': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Adiciona nossas classes CSS (o ImageField/FileField também usa 'input-form')
+        self.fields['foto_perfil'].widget.attrs.update({'class': 'input-form'})
+        self.fields['data_nascimento'].widget.attrs.update({'class': 'input-form'})
+        self.fields['matricula'].widget.attrs.update({'class': 'input-form'})
+        self.fields['cargo'].widget.attrs.update({'class': 'input-form'})
+        self.fields['secretaria'].widget.attrs.update({'class': 'input-form'})

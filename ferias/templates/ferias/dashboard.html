@@ -2,59 +2,58 @@
 {% load static %}
 
 {% block content %}
-    <div class="container-cabecalho">
-        <h2>Minhas Férias</h2>
-        </div>
+<div class="container-cabecalho">
+    <h2>Minhas Férias</h2>
+</div>
 
-    <h4>Meu Próximo Período Disponível</h4>
-    {% if periodo_ativo %}
-        <div class="card">
-            <div class="card-body">
-                Período {{ periodo_ativo.data_inicio_aquisitivo|date:"Y" }}/{{ periodo_ativo.data_fim_aquisitivo|date:"Y" }} 
-                - <strong>Saldo: {{ periodo_ativo.dias_disponiveis }} dias</strong>
-            </div>
-        </div>
-    {% else %}
-        <div class="alerta-info">Você não possui nenhum período de férias com saldo disponível no momento.</div>
-    {% endif %}
+<h4>Meu Próximo Período Disponível</h4>
+{% if periodo_ativo %}
+<div class="card">
+    <div class="card-body">
+        Período {{ periodo_ativo.data_inicio_aquisitivo|date:"Y" }}/{{ periodo_ativo.data_fim_aquisitivo|date:"Y" }}
+        - <strong>Saldo: {{ periodo_ativo.dias_disponiveis }} dias</strong>
+    </div>
+</div>
+{% else %}
+<div class="alerta-info">Você não possui nenhum período de férias com saldo disponível no momento.</div>
+{% endif %}
 
-    <h4 class="titulo-secao">Minhas Solicitações</h4>
-    <table>
-        <thead>
-            <tr>
-                <th>Período Solicitado</th>
-                <th>Total Dias</th>
-                <th>Status</th>
-                <th>Período(s) Aquisitivo(s)</th> </tr>
-        </thead>
-        <tbody>
-            {% for s in solicitacoes %}
-            <tr>
-                <td>{{ s.data_inicio|date:"d/m/Y" }} a {{ s.data_fim|date:"d/m/Y" }}</td>
-                <td>{{ s.total_dias }}</td>
-                <td>
-                    {% if s.status == 'APROVADA_FINAL' %}
-                        <span class="badge badge-sucesso">Aprovada</span>
-                    {% elif s.status == 'REJEITADA' %}
-                        <span class="badge badge-perigo">Rejeitada</span>
-                    {% elif s.status == 'PENDENTE_RH' %}
-                        <span class="badge badge-aviso">Pendente (RH)</span>
-                    {% else %} <span class="badge badge-aviso">Pendente (Gestor)</span>
-                    {% endif %}
-                </td>
-                <td>
-                    {% for periodo in s.periodos_utilizados.all %}
-                        {{ periodo.data_inicio_aquisitivo.year }}/{{ periodo.data_fim_aquisitivo.year }}
-                        {% if not forloop.last %}e {% endif %} {% empty %}
-                        N/A
-                    {% endfor %}
-                </td>
-            </tr>
-            {% empty %}
-            <tr>
-                <td colspan="4" style="text-align: center;">Nenhuma solicitação encontrada.</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<h4 class="titulo-secao">Minhas Solicitações</h4>
+<table>
+    <thead>
+        <tr>
+            <th>Período Solicitado</th>
+            <th>Total Dias</th>
+            <th>Status</th>
+            <th>Período(s) Aquisitivo(s)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for s in solicitacoes %}
+        <tr>
+            <td>{{ s.data_inicio|date:"d/m/Y" }} a {{ s.data_fim|date:"d/m/Y" }}</td>
+            <td>{{ s.total_dias }}</td>
+            <td>
+                {% if s.status == 'APROVADA_FINAL' %}
+                <span class="badge badge-sucesso">Aprovada</span>
+                {% elif s.status == 'REJEITADA' %}
+                <span class="badge badge-perigo">Rejeitada</span>
+                {% else %} <span class="badge badge-aviso">Pendente</span>
+                {% endif %}
+            </td>
+            <td>
+                {% for periodo in s.periodos_utilizados.all %}
+                {{ periodo.data_inicio_aquisitivo.year }}/{{ periodo.data_fim_aquisitivo.year }}
+                {% if not forloop.last %}e {% endif %} {% empty %}
+                N/A
+                {% endfor %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="4" style="text-align: center;">Nenhuma solicitação encontrada.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

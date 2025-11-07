@@ -22,13 +22,18 @@
             <a class="logo" href="{% url 'ferias:dashboard' %}">Sistema de Férias</a>
             
             <nav class="menu-navegacao-container">
+                
                 <ul class="menu-principal">
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'ferias:dashboard' %}">Meu Dashboard</a></li>
                         <li><a href="{% url 'ferias:calendario' %}">Calendário</a></li>
-                        {% if is_gestor %}
+                        
+                        {% if user.perfil and user.perfil.equipe.all %} 
                            <li><a href="{% url 'ferias:dashboard_gestor' %}">Painel do Gestor</a></li>
                         {% endif %}
+                        
+                        {% if user.is_staff %}
+                            {% endif %}
                     {% endif %}
                 </ul>
 
@@ -41,10 +46,15 @@
                         </li>
                         <li class="dropdown-usuario">
                             <button class="dropdown-botao-icone">
-                                <i class="bi bi-person-circle"></i>
+                                {% if request.user.perfil.foto_perfil %}
+                                    <img src="{{ request.user.perfil.foto_perfil.url }}" alt="Foto do Perfil" class="navbar-profile-pic">
+                                {% else %}
+                                    <i class="bi bi-person-circle"></i>
+                                {% endif %}
                             </button>
                             <ul class="dropdown-menu">
                                 <li><span class="dropdown-info">Olá, {{ user.username }}!</span></li>
+                                <li><a href="{% url 'ferias:ver_perfil' %}">Ver Meu Perfil</a></li>
                                 <li><hr></li>
                                 <li><a href="{% url 'ferias:definir_tema' 'light' %}">Tema Claro</a></li>
                                 <li><a href="{% url 'ferias:definir_tema' 'dark' %}">Tema Escuro</a></li>
@@ -59,21 +69,29 @@
                         </li>
                     {% else %}
                         <li>
-                            <a href="{% url 'login' %}" class="botao-acao-principal">
-                                Entrar
+                                                <a href="{% url 'login' %}" class="botao-acao-principal">
+                                            Entrar
                             </a>
                         </li>
                     {% endif %}
-                </ul>
+                  </ul>           
             </nav>
-        </div>
-    </header>
+                 </div>
+       </header>
 
     <main class="container-principal">
+        {% if messages %}
+            <div class="mensagens-container">
+                {% for message in messages %}
+                           <div classa="alerta alerta-{{ message.tags|default:'info' }}">
+                            {{ message }}
+                    </div>
+                {% endfor %}
+             </div>
+             {% endif %}
         {% block content %}{% endblock %}
     </main>
 
-    <script src="{% static 'ferias/js/main.js' %}"></script>
+        <script src="{% static 'ferias/js/main.js' %}"></script>
 </body>
 </html>
-

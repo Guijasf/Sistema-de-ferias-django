@@ -52,11 +52,10 @@ class PeriodoAquisitivo(models.Model):
 # =========================================================================
 class SolicitacaoFerias(models.Model):
     STATUS_CHOICES = (
-        ('PENDENTE_GESTOR', 'Pendente (Gestor)'),
-        ('PENDENTE_RH', 'Pendente (RH)'),
-        ('APROVADA_FINAL', 'Aprovada'),
-        ('REJEITADA', 'Rejeitada'),
-    )
+    ('PENDENTE_GESTOR', 'Pendente (Gestor)'),
+    ('APROVADA_FINAL', 'Aprovada'),
+    ('REJEITADA', 'Rejeitada'),
+)
 
     solicitante = models.ForeignKey(User, on_delete=models.CASCADE, related_name='solicitacoes')
     data_inicio = models.DateField()

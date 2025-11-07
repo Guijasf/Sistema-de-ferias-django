@@ -1,0 +1,95 @@
+{% extends 'ferias/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-centralizado">
+    <div class="card">
+        <div class="card-header">
+            <h3>Editar Perfil</h3>
+        </div>
+        <div class="card-body">
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alerta-{{ message.tags|default:'info' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <h4 class="titulo-secao">Informações de Login</h4>
+
+                <div class="campo-form">
+                    {{ user_form.first_name.label_tag }}
+                    {{ user_form.first_name }}
+                </div>
+                <div class="campo-form">
+                    {{ user_form.last_name.label_tag }}
+                    {{ user_form.last_name }}
+                </div>
+                <div class="campo-form">
+                    {{ user_form.email.label_tag }}
+                    {{ user_form.email }}
+                </div>
+
+                <hr style="border-top: 1px solid var(--cor-borda); margin: 30px 0;">
+
+                <h4 class="titulo-secao">Informações do Perfil</h4>
+
+                <div class="campo-form">
+                    {{ perfil_form.foto_perfil.label_tag }}
+
+                    {% if perfil_form.instance.foto_perfil %}
+                        <p>Foto atual: 
+                            <a href="{{ perfil_form.instance.foto_perfil.url }}" target="_blank">
+                                {{ perfil_form.instance.foto_perfil.name }}
+                            </a>
+                        </p>
+                    {% endif %}
+                    {{ perfil_form.foto_perfil }}
+                </div>
+
+                <div class="campo-form">
+                    {{ perfil_form.data_nascimento.label_tag }}
+                    {{ perfil_form.data_nascimento }}
+                </div>
+                <div class="campo-form">
+                    {{ perfil_form.matricula.label_tag }}
+                    {{ perfil_form.matricula }}
+                </div>
+                <div class="campo-form">
+                    {{ perfil_form.cargo.label_tag }}
+                    {{ perfil_form.cargo }}
+                </div>
+                <div class="campo-form">
+                    {{ perfil_form.secretaria.label_tag }}
+                    {{ perfil_form.secretaria }}
+                </div>
+
+                <button type"submit" class="botao-principal full-width">Salvar Alterações</button>
+                <a href="{% url 'ferias:ver_perfil' %}" class="botao-secundario" style="width: 100%; text-align: center; margin-top: 10px;">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container-centralizado { max-width: 800px; margin: 30px auto; }
+    .botao-principal.full-width { width: 100%; }
+
+    /* Estilos para as mensagens de feedback */
+    .alerta-success {
+        padding: 15px; background-color: #d4edda; color: #155724;
+        border: 1px solid #c3e6cb; border-radius: var(--raio-borda-padrao);
+        margin-bottom: 20px;
+    }
+    .alerta-error {
+        padding: 15px; background-color: #f8d7da; color: #721c24;
+        border: 1px solid #f5c6cb; border-radius: var(--raio-borda-padrao);
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}

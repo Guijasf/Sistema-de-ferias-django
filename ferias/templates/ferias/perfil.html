@@ -1,0 +1,130 @@
+{% extends 'ferias/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-centralizado">
+    <div class="card">
+        <div class="card-header">
+            <h3>Meu Perfil</h3>
+        </div>
+        <div class="card-body">
+            <div class="perfil-container">
+
+                <div class="perfil-foto">
+                    {% if perfil.foto_perfil %}
+                    <img src="{{ perfil.foto_perfil.url }}" alt="Foto do Perfil">
+                    {% else %}
+                    <div class="foto-placeholder">
+                        <i class="bi bi-person-fill" style="font-size: 80px; color: var(--cor-borda);"></i>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="perfil-info">
+                    <h2 style="font-weight: var(--peso-titulo); color: var(--cor-primaria); margin-top: 0;">
+                        {{ perfil.user.get_full_name }}
+                    </h2>
+
+                    <ul class="info-lista">
+                        <li><strong>Cargo:</strong> {{ perfil.cargo|default:"Não informado" }}</li>
+                        <li><strong>Secretaria:</strong> {{ perfil.secretaria|default:"Não informada" }}</li>
+                        <li><strong>Matrícula:</strong> {{ perfil.matricula|default:"Não informada" }}</li>
+                        <li><strong>Data de Contratação:</strong> {{ perfil.data_contratacao|date:"d/m/Y" }}</li>
+                        <li><strong>Idade:</strong> {{ perfil.idade|default:"Não informada" }} anos</li>
+                        <li><strong>E-mail:</strong> {{ perfil.user.email|default:"Não informado" }}</li>
+                        <li><strong>Gestor:</strong> {{ perfil.gestor.user.get_full_name|default:"Não definido" }}</li>
+                    </ul>
+                </div>
+            </div>
+            <ul class="info-lista">
+            </ul>
+
+            <a href="{% url 'ferias:editar_perfil' %}" class="botao-principal" style="margin-top: 20px;">
+                Editar Perfil
+            </a>
+        </div>
+    </div>
+
+    <hr style="border-top: 1px solid var(--cor-borda); margin: 30px 0;">
+
+    <h4 class="titulo-secao">Períodos Aquisitivos Abertos</h4>
+    {% for periodo in periodos_abertos %}
+    <div class="card" style="margin-bottom: 10px;">
+        <div class="card-body" style="padding: 15px 20px;">
+            Período {{ periodo.data_inicio_aquisitivo|date:"Y" }}/{{ periodo.data_fim_aquisitivo|date:"Y" }}
+            - <strong>Saldo: {{ periodo.dias_disponiveis }} dias</strong>
+        </div>
+    </div>
+    {% empty %}
+    <div classs="alerta-info">Nenhum período aquisitivo com saldo no momento.</div>
+    {% endfor %}
+</div>
+</div>
+</div>
+
+<style>
+    .container-centralizado {
+        max-width: 900px;
+        /* Um pouco mais largo para o perfil */
+        margin: 30px auto;
+    }
+
+    .perfil-container {
+        display: flex;
+        align-items: flex-start;
+        gap: 30px;
+    }
+
+    .perfil-foto {
+        flex-basis: 200px;
+        /* Largura fixa para a foto */
+        text-align: center;
+    }
+
+    .perfil-foto img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        /* Garante que a foto não fique distorcida */
+        border-radius: 50%;
+        /* Foto redonda */
+        border: 4px solid var(--cor-borda);
+    }
+
+    .foto-placeholder {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        background-color: var(--cor-fundo);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 4px solid var(--cor-borda);
+    }
+
+    .perfil-info {
+        flex-grow: 1;
+        /* Ocupa o resto do espaço */
+    }
+
+    .info-lista {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 1.1rem;
+        font-weight: var(--peso-leve);
+    }
+
+    .info-lista li {
+        padding: 8px 0;
+        border-bottom: 1px dashed var(--cor-borda);
+    }
+
+    .info-lista li strong {
+        font-weight: var(--peso-titulo);
+        color: var(--cor-texto-suave);
+        min-width: 150px;
+        display: inline-block;
+    }
+</style>
+{% endblock %}
