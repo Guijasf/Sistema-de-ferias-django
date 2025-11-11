@@ -8,15 +8,17 @@ from django.core.exceptions import ValidationError
 from django.http import JsonResponse, HttpResponseRedirect
 from django.urls import reverse
 import datetime
-from django.contrib import messages # NOVA IMPORTAÇÃO para mensagens de sucesso
+from django.contrib import messages
+from django.contrib.auth import login # Para auto-login no cadastro
 
-# ATUALIZADO: Importamos os novos formulários de edição
+# Importamos os novos modelos e formulários
 from .models import PerfilUsuario, PeriodoAquisitivo, SolicitacaoFerias, DescontoFerias
-from .forms import SolicitacaoFeriasForm, CustomLoginForm, UserEditForm, PerfilUsuarioEditForm
+from .forms import (
+    SolicitacaoFeriasForm, CustomLoginForm, UserEditForm, 
+    PerfilUsuarioEditForm, CadastroForm
+)
 
-# ----------------------------------------
-# ATUALIZADO: Dashboard (View Principal)
-# ----------------------------------------
+# --- VIEW DO DASHBOARD ---
 @login_required
 def dashboard(request):
     try:
@@ -25,6 +27,7 @@ def dashboard(request):
         perfil = None
 
     solicitacoes = SolicitacaoFerias.objects.filter(solicitante=request.user).order_by('-data_solicitacao')
+    # Checa se o usuário logado é gestor de ALGUÉM
     is_gestor = PerfilUsuario.objects.filter(gestor=perfil).exists()
 
     periodo_ativo = PeriodoAquisitivo.objects.filter(
@@ -39,9 +42,7 @@ def dashboard(request):
     }
     return render(request, 'ferias/dashboard.html', context)
 
-# ----------------------------------------
-# ATUALIZADO: Solicitar Férias (View)
-# ----------------------------------------
+# --- VIEW DE SOLICITAR FÉRIAS (com lógica de cascata) ---
 @login_required
 @transaction.atomic
 def solicitar_ferias(request):
@@ -64,7 +65,6 @@ def solicitar_ferias(request):
             for periodo in periodos_com_saldo:
                 if dias_a_descontar == 0:
                     break
-
                 if periodo.dias_disponiveis >= dias_a_descontar:
                     DescontoFerias.objects.create(
                         solicitacao=solicitacao,
@@ -86,17 +86,17 @@ def solicitar_ferias(request):
         form = SolicitacaoFeriasForm(user=request.user)
     return render(request, 'ferias/solicitar_ferias.html', {'form': form})
 
-# ----------------------------------------
-# ATUALIZADO: Dashboard do Gestor (View)
-# ----------------------------------------
+# --- VIEW DO PAINEL DO GESTOR ---
 @login_required
 def dashboard_gestor(request):
     try:
         perfil_gestor = request.user.perfil
     except PerfilUsuario.DoesNotExist:
         return redirect('ferias:dashboard')
-
-    if not perfil_gestor:
+    
+    # Checagem de segurança dupla
+    if not PerfilUsuario.objects.filter(gestor=perfil_gestor).exists():
+        messages.error(request, "Você não tem permissão para acessar o painel do gestor.")
         return redirect('ferias:dashboard')
 
     equipe_qs = PerfilUsuario.objects.filter(gestor=perfil_gestor)
@@ -112,13 +112,13 @@ def dashboard_gestor(request):
     }
     return render(request, 'ferias/dashboard_gestor.html', context)
 
-# ----------------------------------------
-# ATUALIZADO: Aprovar (Fluxo de 1 Check)
-# ----------------------------------------
+# --- VIEW DE APROVAÇÃO (1-CHECK) ---
 @login_required
 @transaction.atomic
 def aprovar_solicitacao(request, pk):
     solicitacao = get_object_or_404(SolicitacaoFerias, pk=pk)
+    
+    # TODO: Checar permissão (se o user é o gestor do solicitante)
     
     solicitacao.status = 'APROVADA_FINAL'
     solicitacao.aprovador_gestor = request.user
@@ -139,18 +139,19 @@ def aprovar_solicitacao(request, pk):
                 raise IntegrityError("Falha na aprovação. Saldo insuficiente detectado.")
         
         solicitacao.save()
+        messages.success(request, "Férias aprovadas com sucesso!")
         
     except IntegrityError:
-        pass 
+        messages.error(request, "Erro ao aprovar. O saldo do funcionário pode ter mudado.")
     
     return redirect('ferias:dashboard_gestor')
 
-# ----------------------------------------
-# ATUALIZADO: Rejeitar (View)
-# ----------------------------------------
+# --- VIEW DE REJEIÇÃO ---
 @login_required
 def rejeitar_solicitacao(request, pk):
     solicitacao = get_object_or_404(SolicitacaoFerias, pk=pk)
+    
+    # TODO: Checar permissão
     
     if request.method == 'POST':
         solicitacao.status = 'REJEITADA'
@@ -158,39 +159,11 @@ def rejeitar_solicitacao(request, pk):
         solicitacao.data_aprovacao_gestor = timezone.now()
         solicitacao.motivo_rejeicao = request.POST.get('motivo_rejeicao', '')
         solicitacao.save()
+        messages.success(request, "Solicitação rejeitada.")
     
     return redirect('ferias:dashboard_gestor')
 
-# ----------------------------------------
-# ATUALIZADO: API do Calendário (View)
-# ----------------------------------------
-@login_required
-def api_eventos_ferias(request):
-    ferias_aprovadas = SolicitacaoFerias.objects.filter(status='APROVADA_FINAL')
-    eventos = []
-    for ferias in ferias_aprovadas:
-        eventos.append({
-            'title': ferias.solicitante.get_full_name() or ferias.solicitante.username,
-            'start': ferias.data_inicio,
-            'end': ferias.data_fim + datetime.timedelta(days=1),
-        })
-    return JsonResponse(eventos, safe=False)
-
-# ----------------------------------------
-# VIEWS QUE NÃO MUDAM (Calendário, Tema)
-# ----------------------------------------
-@login_required
-def calendario_ferias(request):
-    return render(request, 'ferias/calendario.html')
-
-@login_required
-def definir_tema(request, tema):
-    request.session['tema_preferido'] = tema
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('ferias:dashboard')))
-
-# ----------------------------------------
-# VIEW DE PERFIL (Existente)
-# ----------------------------------------
+# --- VIEWS DE PERFIL ---
 @login_required
 def ver_perfil(request):
     try:
@@ -207,9 +180,6 @@ def ver_perfil(request):
     }
     return render(request, 'ferias/perfil.html', context)
 
-# ----------------------------------------
-# A NOVA VIEW QUE ESTAVA FALTANDO!
-# ----------------------------------------
 @login_required
 @transaction.atomic
 def editar_perfil(request):
@@ -229,7 +199,6 @@ def editar_perfil(request):
             return redirect('ferias:ver_perfil')
         else:
             messages.error(request, 'Por favor, corrija os erros abaixo.')
-
     else:
         user_form = UserEditForm(instance=request.user)
         perfil_form = PerfilUsuarioEditForm(instance=perfil)
@@ -239,3 +208,92 @@ def editar_perfil(request):
         'perfil_form': perfil_form
     }
     return render(request, 'ferias/editar_perfil.html', context)
+
+# --- VIEW DE CADASTRO PÚBLICO ---
+def cadastro_view(request):
+    if request.user.is_authenticated:
+        return redirect('ferias:dashboard')
+    
+    if request.method == 'POST':
+        form = CadastroForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, 'Cadastro realizado com sucesso! Faça o login para continuar.')
+            return redirect('login')
+    else:
+        form = CadastroForm()
+        
+    return render(request, 'registration/cadastro.html', {'form': form})
+
+# --- VIEW DE ONBOARDING ---
+@login_required
+@transaction.atomic
+def onboarding_view(request):
+    try:
+        perfil = request.user.perfil
+    except PerfilUsuario.DoesNotExist:
+        return redirect('ferias:dashboard')
+    
+    if perfil.onboarding_completo:
+        return redirect('ferias:dashboard')
+
+    periodos = PeriodoAquisitivo.objects.filter(
+        perfil=perfil,
+        status='ABERTO'
+    ).order_by('data_inicio_aquisitivo')
+
+    if request.method == 'POST':
+        try:
+            for periodo in periodos:
+                nome_do_campo_saldo = f"periodo_saldo_{periodo.id}"
+                nome_do_campo_check = f"periodo_check_{periodo.id}"
+                
+                if nome_do_campo_check in request.POST:
+                    periodo.dias_disponiveis = 0
+                    periodo.status = 'FECHADO'
+                else:
+                    dias_disponiveis_str = request.POST.get(nome_do_campo_saldo)
+                    if dias_disponiveis_str is not None:
+                        novos_dias = int(dias_disponiveis_str)
+                        periodo.dias_disponiveis = novos_dias
+                        if novos_dias == 0:
+                            periodo.status = 'FECHADO'
+                        else:
+                            periodo.status = 'ABERTO'
+                
+                periodo.save()
+            
+            perfil.onboarding_completo = True
+            perfil.save()
+            
+            return redirect('ferias:dashboard')
+
+        except Exception as e:
+            messages.error(request, f"Ocorreu um erro: {e}. Verifique os valores digitados.")
+
+    context = {
+        'periodos_onboarding': periodos
+    }
+    return render(request, 'ferias/onboarding.html', context)
+
+# --- VIEWS DE UTILIDADE ---
+@login_required
+def api_eventos_ferias(request):
+    ferias_aprovadas = SolicitacaoFerias.objects.filter(status='APROVADA_FINAL')
+    eventos = []
+    for ferias in ferias_aprovadas:
+        eventos.append({
+            'title': ferias.solicitante.get_full_name() or ferias.solicitante.username,
+            'start': ferias.data_inicio,
+            'end': ferias.data_fim + datetime.timedelta(days=1),
+        })
+    return JsonResponse(eventos, safe=False)
+
+@login_required
+def calendario_ferias(request):
+    return render(request, 'ferias/calendario.html')
+
+@login_required
+def definir_tema(request, tema):
+    request.session['tema_preferido'] = tema
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER', reverse('ferias:dashboard')))

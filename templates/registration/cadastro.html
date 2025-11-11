@@ -1,0 +1,136 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - Sistema de Férias</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{% static 'ferias/css/style.css' %}">
+</head>
+<body class="login-page">
+    
+    <div class="container-centralizado" style="max-width: 800px;">
+        <div class="card" style="min-height: auto;">
+            <div class="card-body">
+                <div class="text-center">
+                    <h1 class="logo" style="font-size: 2rem; margin-bottom: 20px;">Sistema de Férias</h1>
+                    <h2 class="form-titulo">Criar Nova Conta</h2>
+                </div>
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    {% if form.errors %}
+                        <div class="alerta-erro">
+                            <p>Por favor, corrija os erros abaixo.</p>
+                        </div>
+                    {% endif %}
+                    
+                    <div class="row-campos">
+                        <div class="campo-form col-metade">
+                            {{ form.first_name.label_tag }}
+                            {{ form.first_name }}
+                        </div>
+                        <div class="campo-form col-metade">
+                            {{ form.last_name.label_tag }}
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+
+                    <div class="campo-form">
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                        {% for error in form.username.errors %}<div class="erro-campo">{{ error }}</div>{% endfor %}
+                    </div>
+
+                    <div class="campo-form">
+                        {{ form.email.label_tag }}
+                        {{ form.email }}
+                        {% for error in form.email.errors %}<div class="erro-campo">{{ error }}</div>{% endfor %}
+                    </div>
+                    
+                    <div class="row-campos">
+                        <div class="campo-form col-metade">
+                            {{ form.password.label_tag }}
+                            {{ form.password }}
+                        </div>
+                        <div class="campo-form col-metade">
+                            {{ form.password_confirm.label_tag }}
+                            {{ form.password_confirm }}
+                        </div>
+                    </div>
+                    {% for error in form.password_confirm.errors %}<div class="erro-campo">{{ error }}</div>{% endfor %}
+
+                    <hr style="border-top: 1px solid var(--cor-borda); margin: 30px 0;">
+                    
+                    <div class="row-campos">
+                        <div class="campo-form col-metade">
+                            {{ form.cargo.label_tag }}
+                            {{ form.cargo }}
+                        </div>
+                        <div class="campo-form col-metade">
+                            {{ form.lotacao.label_tag }}
+                            {{ form.lotacao }}
+                        </div>
+                    </div>
+
+                    <div class="row-campos">
+                        <div class="campo-form col-metade">
+                            {{ form.secretaria.label_tag }}
+                            {{ form.secretaria }}
+                        </div>
+                        <div class="campo-form col-metade">
+                            {{ form.matricula.label_tag }}
+                            {{ form.matricula }}
+                            {% for error in form.matricula.errors %}<div class="erro-campo">{{ error }}</div>{% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row-campos">
+                        <div class="campo-form col-metade">
+                            {{ form.data_contratacao.label_tag }}
+                            {{ form.data_contratacao }}
+                        </div>
+                        <div class="campo-form col-metade">
+                            {{ form.data_nascimento.label_tag }}
+                            {{ form.data_nascimento }}
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="botao-principal full-width">Cadastrar</button>
+                </form>
+
+                <div class="login-links">
+                    <a href="{% url 'login' %}" class="link-texto">Já tem uma conta? Faça o login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <style>
+        .container-centralizado {
+            max-width: 800px;
+            margin: 30px auto;
+        }
+        .row-campos {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+        }
+        .col-metade {
+            flex: 1;
+        }
+        @media (max-width: 600px) {
+            .row-campos {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
+</body>
+</html>

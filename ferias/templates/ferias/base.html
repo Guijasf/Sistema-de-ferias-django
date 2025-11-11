@@ -69,29 +69,31 @@
                         </li>
                     {% else %}
                         <li>
-                                                <a href="{% url 'login' %}" class="botao-acao-principal">
-                                            Entrar
+                            <a href="{% url 'login' %}" class="botao-acao-principal">
+                                Entrar
                             </a>
                         </li>
                     {% endif %}
-                  </ul>           
+                </ul>
             </nav>
-                 </div>
-       </header>
+        </div>
+    </header>
 
     <main class="container-principal">
+        
         {% if messages %}
             <div class="mensagens-container">
                 {% for message in messages %}
-                           <div classa="alerta alerta-{{ message.tags|default:'info' }}">
-                            {{ message }}
+                    <div class="alerta alerta-{{ message.tags|default:'info' }}">
+                        {{ message }}
                     </div>
                 {% endfor %}
-             </div>
-             {% endif %}
+            </div>
+        {% endif %}
+
         {% block content %}{% endblock %}
     </main>
 
-        <script src="{% static 'ferias/js/main.js' %}"></script>
+    <script src="{% static 'ferias/js/main.js' %}"></script>
 </body>
 </html>

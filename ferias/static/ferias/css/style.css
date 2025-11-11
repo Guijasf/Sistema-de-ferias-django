@@ -530,3 +530,35 @@ body.tema-escuro .fc-theme-standard th, body.tema-escuro .fc-theme-standard td {
 body.tema-escuro .fc-theme-standard th { background-color: #1e1e1e; }
 body.tema-escuro .fc .fc-daygrid-day-number { color: #eee; }
 body.tema-escuro .fc .fc-day-other .fc-daygrid-day-number { color: #777; }
+
+
+/* === ESTILOS DA TELA DE ONBOARDING === */
+
+.onboarding-card-body {
+    display: flex;
+    justify-content: space-between; /* Joga o input para um lado e o check para o outro */
+    align-items: center;
+    gap: 20px;
+    padding: 15px 20px;
+}
+
+.onboarding-campo {
+    flex-grow: 1; /* Faz o campo de input ocupar o espaço disponível */
+}
+
+.onboarding-check {
+    flex-shrink: 0; /* Impede que o checkbox encolha */
+    /* Estilização bonita para o checkbox, como na foto */
+    transform: scale(1.5); /* Aumenta o tamanho do checkbox */
+    accent-color: var(--cor-primaria); /* Deixa o checkbox laranja */
+}
+
+/* Remove as setinhas do input de número (para ficar mais limpo) */
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}

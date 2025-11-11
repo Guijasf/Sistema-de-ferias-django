@@ -8,7 +8,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="{% static 'ferias/css/style.css' %}">
 </head>
@@ -22,16 +22,24 @@
                     Gerencie suas férias de forma eficiente e sem burocracia.
                     Acesse seu painel para solicitar e acompanhar suas solicitações.
                 </p>
-                </div>
+            </div>
             
             <div class="login-right">
                 <h2 class="form-titulo">Fazer Login</h2>
                 <form method="post">
                     {% csrf_token %}
                     
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alerta alerta-success">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
                     {% if form.errors %}
-                        <div class="alerta-erro">
-                            <p>Nome de usuário ou senha inválidos. Por favor, tente novamente.</p>
+                        <div class="alerta-erro" role="alert">
+                            Nome de usuário ou senha inválidos. Tente novamente.
                         </div>
                     {% endif %}
                     
@@ -48,12 +56,12 @@
                     <button type="submit" class="botao-principal full-width">Entrar</button>
                     <div class="login-links">
                         <a href="#" class="link-texto">Esqueceu a senha?</a>
+                        <br>
+                        <a href="{% url 'cadastro' %}" class="link-texto">Não tem uma conta? <strong>Cadastre-se</strong></a>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
-    <script src="{% static 'ferias/js/main.js' %}"></script>
 </body>
 </html>

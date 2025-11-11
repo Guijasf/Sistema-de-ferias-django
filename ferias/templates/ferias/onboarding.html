@@ -1,0 +1,87 @@
+{% extends 'ferias/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-centralizado">
+    <div class="card">
+        <div class="card-header">
+            <h3>Configuração Inicial de Saldo</h3>
+        </div>
+        <div class="card-body">
+            <p style="font-weight: var(--peso-leve); color: var(--cor-texto-suave);">
+                Olá, {{ request.user.get_full_name|default:request.user.username }}! Notamos que este é seu primeiro acesso.
+                Para garantir que seu histórico de férias esteja correto, por favor,
+                ajuste seu saldo de dias disponíveis para cada período aquisitivo abaixo.
+            </p>
+            <p style="font-weight: var(--peso-leve); color: var(--cor-texto-suave);">
+                <strong>Marque a caixa</strong> para os períodos que você já gozou integralmente (saldo 0).
+                Para períodos recentes, <strong>deixe a caixa desmarcada</strong> e digite o saldo restante.
+            </p>
+            
+            <hr style="border-top: 1px solid var(--cor-borda); margin: 30px 0;">
+
+            <form method="post">
+                {% csrf_token %}
+                
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alerta alerta-{{ message.tags|default:'info' }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% for p in periodos_onboarding %}
+                    <div class="card" style="margin-bottom: 15px;">
+                        <div class="onboarding-card-body"> 
+                            <div class="onboarding-campo">
+                                <label for="periodo_saldo_{{ p.id }}" style="font-weight: var(--peso-titulo);">
+                                    Período {{ p.data_inicio_aquisitivo|date:"Y" }}/{{ p.data_fim_aquisitivo|date:"Y" }}
+                                </label>
+                                <input 
+                                    type="number"
+                                    name="periodo_saldo_{{ p.id }}"
+                                    id="periodo_saldo_{{ p.id }}"
+                                    class="input-form"
+                                    value="{{ p.dias_disponiveis }}"
+                                    min="0"
+                                    max="{{ p.dias_direito }}"
+                                    required>
+                            </div>
+                            <div class="onboarding-check">
+                                <input 
+                                    type="checkbox"
+                                    class="onboarding-check"
+                                    name="periodo_check_{{ p.id }}"
+                                    id="periodo_check_{{ p.id }}"
+                                    title="Marcar se já gozou este período">
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="alerta-info">
+                        Nenhum período aquisitivo foi calculado. 
+                        Verifique sua data de contratação com o Master ADM.
+                    </div>
+                {% endfor %}
+                
+                {% if periodos_onboarding %}
+                    <button type="submit" class="botao-principal full-width" style="margin-top: 20px;">
+                        Salvar e Acessar o Sistema
+                    </button>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .container-centralizado {
+        max-width: 800px;
+        margin: 30px auto;
+    }
+    .botao-principal.full-width {
+        width: 100%;
+    }
+</style>
+{% endblock %}

@@ -13,7 +13,8 @@
                         <th>Funcionário</th>
                         <th>Período Solicitado</th>
                         <th>Total de Dias</th>
-                        <th>Período(s) Aquisitivo(s)</th> <th>Ações</th>
+                        <th>Período(s) Aquisitivo(s)</th>
+                        <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -36,8 +37,7 @@
                                     {% csrf_token %}
                                     <button type="submit" class="botao-sucesso">Aprovar</button>
                                 </form>
-
-                                <button type"button" class="botao-perigo js-modal-trigger" data-target="#rejeitarModal-{{ s.pk }}">
+                                <button type="button" class="botao-perigo js-modal-trigger" data-target="#rejeitarModal-{{ s.pk }}">
                                     Rejeitar
                                 </button>
                             </div>
@@ -48,7 +48,7 @@
             </table>
         </div>
     {% else %}
-        <div classclass="alerta-info">Nenhuma solicitação pendente na sua equipe.</div>
+        <div class="alerta-info">Nenhuma solicitação pendente na sua equipe.</div>
     {% endif %}
 
     {% for s in solicitacoes_pendentes %}
@@ -63,7 +63,6 @@
                 <div class="modal-body">
                     <p>Funcionário: <strong>{{ s.solicitante.get_full_name|default:s.solicitante.username }}</strong></p>
                     <p>Período: <strong>{{ s.data_inicio|date:"d/m/Y" }} a {{ s.data_fim|date:"d/m/Y" }}</strong></p>
-                    
                     <div class="campo-form">
                         <label for="motivo_rejeicao-{{ s.pk }}">Motivo da Rejeição (obrigatório):</label>
                         <textarea class="input-form" name="motivo_rejeicao" id="motivo_rejeicao-{{ s.pk }}" rows="3" required></textarea>
@@ -79,15 +78,8 @@
     {% endfor %}
 
 <style>
-    .titulo-secao {
-        margin-bottom: 10px;
-    }
-    .acoes-container {
-        display: flex;
-        gap: 10px; /* Espaço entre os botões de ação */
-    }
-    .card table {
-        margin-bottom: 0; /* Remove a margem da tabela quando ela está dentro de um card */
-    }
+    .titulo-secao { margin-bottom: 10px; }
+    .acoes-container { display: flex; gap: 10px; }
+    .card table { margin-bottom: 0; }
 </style>
 {% endblock %}
